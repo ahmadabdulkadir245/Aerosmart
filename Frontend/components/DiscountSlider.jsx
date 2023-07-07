@@ -37,7 +37,7 @@ import SliderHeading from './SliderHeading';
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [slideCount.lg, slideCount.sm,slideCount.md]);
 
 
   return (

@@ -36,7 +36,7 @@ const ProductFeed = () => {
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [perPages.lg, perPages.sm, perPages.md]);
   useEffect(() => {
     const graphqlQuery = {
       query: `
