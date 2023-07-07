@@ -37,7 +37,7 @@ import SliderHeading from './SliderHeading';
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, [slideCount.lg, slideCount.sm,slideCount.md]);
+  }, [slideCounts.lg, slideCounts.sm,slideCounts.md]);
 
 
   return (
@@ -56,7 +56,7 @@ import SliderHeading from './SliderHeading';
       <div className='absolute h-full w-10  bg-white pulse overflow-hidden z-[40] rounded-md'>
       </div>
       </div>
-        <Swiper watchSlidesProgress={true} slidesPerView={2} className="mySwiper overflow-x-scroll">
+        {/* <Swiper watchSlidesProgress={true} slidesPerView={2} className="mySwiper overflow-x-scroll">
         {loadingContent.map((product, index)=> (
         <SwiperSlide key={index} >
         <div className='relative w-[90%] flex flex-col  bg-white z-30 shadow-xl transition-all duration-500 linear animate-pulse'>
@@ -69,7 +69,7 @@ import SliderHeading from './SliderHeading';
         </div>
         </SwiperSlide>
           ))}
-  </Swiper>
+  </Swiper> */}
       </>
       }
     </div>
