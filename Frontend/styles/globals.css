@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@layer base {
+  .link {
+    @apply cursor-pointer hover:underline;
+  }
+  @layer base {
+    html {
+      @apply font-poppins;
+    }
+    body {
+      @apply bg-gray-50;
+    }
+  }
+}
+
+
+.pulse {
+  filter: blur(3px);
+  animation: leftToRight 2s infinite;
+}
+.skeleton-animation {
+  @apply absolute h-full w-full  bg-white pulse overflow-hidden z-[40];
+}
+
+@layer components {
+@keyframes leftToRight {
+  0% {
+    transform: translateX(0px);
+    opacity: 0.4;
+  }
+  20% {
+    transform: translateX(150px);
+    opacity: 0;
+  }
+  40% {
+    transform: translateX(0px);
+    opacity: 0.4;
+  }
+  60% {
+    transform: translateX(150px);
+    opacity: 0;
+  }
+  80% {
+    transform: translateX(0px);
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateX(150px);
+    opacity: 0.4;
+  }
+}
+}

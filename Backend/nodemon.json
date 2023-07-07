@@ -1,0 +1,12 @@
+{
+    "env": {
+        "SQL_USER": "root",
+        "SQL_HOST": "127.0.0.1",
+        "SQL_DIALECT": "mysql",
+        "SQL_PASSWORD": "Ahano1one$",
+        "SQL_DATABASE": "aerosmart",
+        "CLOUD_NAME": "dxc8mersm",
+        "CLOUD_KEY": "646419695974377",
+        "CLOUD_KEY_SECRET": "w8rED2f0vt2FKpfuXslWTAAkXQQ"
+    }
+}
