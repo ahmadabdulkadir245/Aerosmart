@@ -33,9 +33,12 @@ if (searchWord !== undefined) {
   }
 
 
-const clearSearchWordHandler =(id) => {
+const clearSearchWordCategoryHandler =(id) => {
   setSearchWord("") 
   router.push(`/search/${id}`)
+}
+const clearSearchWordHandler =(id) => {
+  setSearchWord("") 
 }
 
   
@@ -80,7 +83,7 @@ const clearSearchWordHandler =(id) => {
             product categories
           </div>
           {filteredCategories.map((category) => (
-            <div key={category} className="py-2  px-3 capitalize cursor-pointer" onClick={clearSearchWordHandler.bind(this, category)} >
+            <div key={category} className="py-2  px-3 capitalize cursor-pointer" onClick={clearSearchWordCategoryHandler.bind(this, category)} >
               <Link href={`/search/${category}`}>
               {category}
               </Link>
