@@ -215,7 +215,6 @@ function SearchResultPage({products}) {
       </div>
 
       <div className="max-w-7xl mx-auto">
-      
       <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
 
       <ProductSlider sectionTitle={'top selling'} products={products} path={'/'}   discount={true} />

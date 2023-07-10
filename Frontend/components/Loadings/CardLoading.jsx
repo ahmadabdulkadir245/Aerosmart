@@ -1,7 +1,7 @@
 
-function CardLoading() {
+function CardLoading({key}) {
   return (
-    <div>
+    <div key={key}>
            <div className='relative flex flex-col  bg-white z-30 shadow-xl transition-all duration-500 linear animate-pulse h-[250px]'>
           <div className='absolute h-full w-10  bg-white pulse overflow-hidden z-[40] rounded-md'></div>
 

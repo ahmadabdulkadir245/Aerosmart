@@ -70,8 +70,8 @@ function HomeLoading() {
         <div
     className='grid grid-cols-2 grid-flow-row-dense md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-5 m-2 gap-2 lg:gap-6 px-2 md:px-[25px] lg:px-0 mx-auto max-w-7xl'
   >
-    {card.map(card => (
-    <CardLoading/>
+    {card.map((card, index) => (
+    <CardLoading key={index} />
     ))}
              </div>
 

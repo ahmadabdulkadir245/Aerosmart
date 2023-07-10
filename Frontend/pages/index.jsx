@@ -37,7 +37,7 @@ export default function Home({products}) {
       setLoading(false);
     }, 300)
 
-  },[loading] );
+  },[loading, dispatch, products] );
   
   return (
     <div>
