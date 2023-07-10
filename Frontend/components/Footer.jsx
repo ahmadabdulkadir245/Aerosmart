@@ -8,7 +8,7 @@ import { RxInstagramLogo } from "react-icons/rx"
 
 function Footer() {
   return (
-    <div className="relative left-0 bottom-0 bg-white  py-5 px-5 text-gray-800  mt-16 shadow-xl min-h- font-poppins ">
+    <div className="relative left-0 bottom-0 bg-white  py-5 px-5 text-gray-800  mt-16 shadow-xl min-h- font-poppins w-full mx-auto">
     <div
     className='grid md:grid-cols-2 grid-flow-row-dense lg:grid-cols-4
   mx-auto m-2 gap-10 px-2 md:px-4 mt-12 text-xs max-w-7xl'

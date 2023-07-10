@@ -19,18 +19,14 @@ import axios from 'axios';
 
 function SearchResultPage({products}) {
     const router = useRouter()
-  const recievedProducts = useSelector(productsRetrieved) || []
-  const similarProducts = recievedProducts 
     const [totalPages, setTotalPages] = useState(1)
     const [page, setPage] = useState(0)
     const searchResult = router.query.searchResult
     const searchFilter = products.filter((product) => {
       return product.category == searchResult
     })
-    // const [searchProducts, setSearchProducts] = useState([])
 
   // perPage function to render different amount of pages for each device
-  // const perPage = 6
   const perPages = {
     sm: 2,
     md: 2,
@@ -66,44 +62,6 @@ function SearchResultPage({products}) {
   useEffect(() => {
     setTotalPages(Math.ceil(searchFilter.length / perPage))
   }, [searchFilter, perPage])
-
-    
-
-    // useEffect(() => {
-    //   const graphqlQuery  = {
-    //     query: `
-    //     {
-    //       search(word: "${searchResult}", page: ${page}, perPage: ${perPage} ) {
-    //        search {
-    //        id
-    //        title
-    //        description
-    //        price
-    //        image_url
-    //       }
-    //       totalPages
-    //       }
-    //     }
-    //     `
-    //    }
-    //  fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify(graphqlQuery)
-    //   })
-    //     .then(res => {  
-    //       return res.json();
-    //     })
-    //     .then(productData => {
-    //       const recievedData = productData.data?.search?.search || []
-    //       recievedData.reverse()
-    //       const productPages = productData.data?.search.totalPages
-    //       setSearchProducts(recievedData)
-    //       setTotalPages(productPages)
-    //     })
-    // }, [page, searchResult])
 
     const [grid, setGrid] = useState(true)
     const gridHandler = () => {

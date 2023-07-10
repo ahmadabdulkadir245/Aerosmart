@@ -117,18 +117,18 @@ function Navigation() {
                 onClick={showSearchHandler}
                   />
                   {authToken ?
-                      <div className='hover:text-[#f7b32b] transition-all duration-500 linear' onClick={logoutHandler}>
+                      <div className='hover:text-[rgb(247,179,43)] transition-all duration-500 linear' onClick={logoutHandler}>
                       <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 ' />
                    <p className='hidden lg:inline font-semiold md:text-xs font-titilliumWeb link'>
                   Logout
                 </p>
                 </div>
                 :  
-                  <Link href='/login'>
-                     <div className='hover:text-[#f7b32b] transition-all duration-500 linear'>
-                        <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 ' />
-                     <p className='hidden lg:inline font-semiold md:text-xs font-titilliumWeb link'>
-                    Login
+                  <Link href='/account'>
+                     <div className='hover:text-[#f7b32b] transition-all duration-500 linear '>
+                        <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 flex justify-center ' />
+                     <p className='hidden lg:inline font-semiold md:text-xs font-titilliumWeb link capitalize text-center'>
+                    my account
                   </p>
                   </div>
                   </Link>

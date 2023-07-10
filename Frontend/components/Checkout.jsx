@@ -15,9 +15,9 @@ function Checkout({ id, title, price, key, productQty, image_url }) {
     <div className='px-3 ' key={key}>
         <div className=''>
            
-                <div className='bg-white py-2 px-3'>
+                <div className='bg-white py-2 px-3 '>
             <div className='relative grid grid-cols-4  gap-3 '>
-                <div className='relative col-span-1 w-full h-[80px]'>
+                <div className='relative col-span-1 w-full h-[80px] lg:h-[100px]'>
                     <Image src={image_url} alt={title}fill />
                 </div>
                 <div className=' col-span-2'>
@@ -27,7 +27,7 @@ function Checkout({ id, title, price, key, productQty, image_url }) {
                         <p className='text-xs'>Total: </p>
                 </div>
                 <div className='col-span-1 '>
-                <MdClear className="absolute right-2 w-6 h-6 text-gray-500 " onClick={removeItemFromOrders}/>
+                <MdClear className="absolute right-2 w-6 h-6 text-gray-500 cursor-pointer" onClick={removeItemFromOrders}/>
                 <div className='flex items-center absolute right-2 bottom-1'>  <TbCurrencyNaira  className="w-4 h-4 text-gray-500"/>
                 <p className='text-xs'>{(price * productQty).toLocaleString()}</p></div>
                 </div>

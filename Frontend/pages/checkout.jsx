@@ -33,11 +33,13 @@ function CheckoutPage() {
   return (
     <div className="">
       <Header />
+        <div className="mx-auto max-w-5xl">
       <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
                 1. review your order ({orderItems.length} {orderItems.length < 2 ? 'item' : 'items'})
             </h2>
+            <div className="max-h-[360px] overflow-y-scroll scrollbar-hide">
             {orderItems.map(
-          ({ product, qty}) => (
+              ({ product, qty}) => (
             <Checkout
               key={product.id}
               id={product.id}
@@ -46,9 +48,10 @@ function CheckoutPage() {
               description={product.description}
               productQty={qty}
               image_url={product.image_url}
-            />
-          )
-        )}
+              />
+              )
+              )}
+              </div>
         <div className='px-3'>
         <div className='flex justify-between bg-gray-200 shodow-lg  p-2 text-gray-700 my-4'>
           <div className='capitalize font-bold'>subtotal:</div>
@@ -58,87 +61,53 @@ function CheckoutPage() {
 
             <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
 
-      <div className='px-3'>
+      <div className='px-3 mb-4'>
+        <div className="flex justify-between items-center">
+        <h2 className='uppercase text-gray-700 my-2'>2. delivery type</h2>
+        </div>
+        <div className="bg-white w-full text-xs px-2 py-4 space-y-3">
+          <div className="">
+          <div className="flex space-x-3 mb-1">
+            <input type="radio" name="delivery" className='cursor-pointer' />
+            <p>Door deliver</p>
+          </div>
+          <p className='pl-6'>(1 - 2) days delivery Gauranteed</p>
+          </div>
+            <div className="">
+          <div className="flex space-x-3 mb-1">
+            <input type="radio" name="delivery" className='cursor-pointer' />
+            <p>standard delivery</p>
+          </div>
+          <p className='pl-6'>(3 - 7) Business days estimated</p>
+          </div>
+        </div>
+      </div>
+
+
+      <div className='px-3 mb-4'>
+        <div className="flex justify-between items-center">
         <h2 className='uppercase text-gray-700 my-2'>2. delivery address</h2>
-        <p className='text-xs capitalize'>all fields required</p>
-
-        <form className='my-3'>
-
-        <input
-              type='text'
-              className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-              placeholder='Email '
-              required
-              // onChange={passwordInputHandler}
-            />
-        <input
-              type='text'
-              className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-              placeholder='First Name'
-              required
-              // onChange={passwordInputHandler}
-            />
-        <input
-              type='text'
-              className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-              placeholder='Last Name '
-              required
-              // onChange={passwordInputHandler}
-            />
-              
-             <input
-                type='number'
-                className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-                placeholder='Phone Number e.g 081 '
-                required
-                // onChange={passwordInputHandler}
-              />
-             <input
-                type='text'
-                className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-                placeholder='Devivery address '
-                required
-                // onChange={passwordInputHandler}
-              />
-
-          <select className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5 text-gray-500'>
-            <option>select state</option>
-            <option>Abuja</option>
-            <option>Ibadan</option>
-            <option>Kaduna</option>
-            <option>Katsina</option>
-            <option>Port Harcourt</option>
-            <option>Lagos</option>
-          </select>
-
-        <input
-              type='text'
-              className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-              placeholder='Postcode  / Zip Code. optional '
-              required
-              // onChange={passwordInputHandler}
-            />
-
-<select className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5 text-gray-700'>
-            <option>Nigeria</option>
-          </select>
-            
-        </form>
-        
+        <button className="bg-gray-500 text-white capitalize text-xs py-2 rounded-md cursor-pointer w-[150px] hover:bg-gray-400 transition-all delay-100 ease-in ">
+          select address
+        </button>
+        </div>
+        <div className="bg-white w-full text-xs px-2 py-4">
+          <p>Address not selected</p>
+        </div>
       </div>
 
 
             {/* Pament section */}
             <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
             <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
-                3. pament 
+                4. pamentemt
             </h2>
             
 
             <div className='px-3'>
             <input
                 type='number'
-                className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
+                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
                 placeholder='0000 0000 0000 0000'
                 required
                 // onChange={passwordInputHandler}
@@ -146,14 +115,14 @@ function CheckoutPage() {
  <div className="flex justify-between my-5">
  <input
                 type='number'
-                className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-[50%]  flex  lg:my-2'
+                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-[50%]  flex  lg:my-2'
                 placeholder='MM/YY'
                 required
                 // onChange={passwordInputHandler}
               />
    <input
                 type='text'
-                className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-[40%]  flex  lg:my-2'
+                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-[40%]  flex  lg:my-2'
                 placeholder='CVV '
                 required
                 // onChange={passwordInputHandler}
@@ -189,13 +158,11 @@ function CheckoutPage() {
                         <p className='text-xs'>Email me about new products, deals and discounts.</p>
                   </div>
                   
-                  <button className="capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto">Pay Now</button>
+                  <button className="capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in" onClick={() => router.push(`/orders`)}>Pay Now</button>
 
                 </div>
             </div >
-            
-
-
+            </div>
       <Footer/>
     </div>
   )

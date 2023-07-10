@@ -53,7 +53,7 @@ function SideBarLinks() {
 
 
         <SideBarLink Icon={RiUser3Line} title={'my account'} path={'/'}/>
-        <SideBarLink Icon={AiOutlineShop} title={'orders'} path={'/checkout'}/>
+        <SideBarLink Icon={AiOutlineShop} title={'orders'} path={'/orders'}/>
         <SideBarLink Icon={AiOutlineShoppingCart} title={'cart'} path={'/cart'}/>
         <SideBarLink Icon={GiWoodBeam} title={'woods'} path={'/'}/>
         <SideBarLink Icon={MdConstruction} title={'metals'} path={'/'}/>
