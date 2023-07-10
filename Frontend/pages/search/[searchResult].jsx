@@ -214,12 +214,14 @@ function SearchResultPage({products}) {
         />
       </div>
 
+      <div className="max-w-7xl mx-auto">
       
       <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
 
       <ProductSlider sectionTitle={'top selling'} products={products} path={'/'}   discount={true} />
 
       <ProductSlider sectionTitle={'discount products'} products={products.reverse()} path={'/'}   discount={true}  bgColor={'bg-gray-400'}/>
+      </div>
 
 
       <Footer/>
