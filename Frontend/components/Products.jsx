@@ -1,22 +1,22 @@
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { addToCart } from "../slices/cartSlice";
 import { useDispatch } from "react-redux"
 import {TbCurrencyNaira} from "react-icons/tb"
+import { addToCart } from "../slices/cartSlice";
 
-const Products = ({ id, title, price, description, image_url }) => {
+const Products = ({ id, title, price, description, image_url , category}) => {
     const [loading, setLoading] = useState(false);
     useEffect(() => {
       setTimeout(() => {
         setLoading(true);
-      }, 400);
+      }, 300);
     }, []);
     const dispatch = useDispatch();
     const addProductToCart = () => {
       const Product = {
-        title,
         id,
+        title,
         price,
         description,
         image_url,
@@ -26,16 +26,16 @@ const Products = ({ id, title, price, description, image_url }) => {
   return (
     <>
       {loading ? (
-        <div className='relative flex flex-col  bg-white z-30 shadow-xl rounded-md text-gray-500'>
+        <div className='relative flex flex-col  bg-white z-30 shadow-xl rounded-sm text-gray-500 overflow-hidden transition delay-100 ease-in-out'>
           <Link href={`/products/${id}`}>
               {/* <p className='absolute top-2 right-2 text-xs italic text-gray-400 z-20'>
                 {category}
               </p> */}  
-              <div className='relative w-full h-[160px]  overflow-hidden rounded-t-md'>
+              <div className='relative w-full h-[160px]'>
                 <Image src={image_url} alt={image_url} layout="fill" objectFit="cover" />
               </div>
           </Link>
-          <p className='my-1 lg:mt-2 px-2 capitalize text-sm font-poppins line-clamp-1 text-gray-700'>{title}</p>
+          <p className='my-1 lg:mt-2 px-2 uppercase text-sm  font-poppins line-clamp-1 text-gray-700'>{title}</p>
           {/* <div className='flex  px-2'>
             {Array(rating)
               .fill(1)
@@ -52,7 +52,7 @@ const Products = ({ id, title, price, description, image_url }) => {
           </div>
 
           <button
-            className='mt-1 lg:mt-2 mx-auto bg-yellow-500 hover:bg-yellow-400 p-2 w-[90%] text-white rounded-md  uppercase mb-2 text-xs'
+            className='mt-1 lg:mt-2 mx-auto bg-yellow-500 hover:bg-yellow-400 p-2 w-[90%] text-white rounded-sm  uppercase mb-2 text-xs font-poppins transition-all delay-100 ease-in'
             onClick={addProductToCart}
           >
             Add To Cart
@@ -60,7 +60,7 @@ const Products = ({ id, title, price, description, image_url }) => {
         </div>
       ) : (
         <div className='relative flex flex-col  bg-white z-30 shadow-xl transition-all duration-500 linear animate-pulse h-[280px]'>
-          <div className='absolute h-full w-10  bg-white pulse overflow-hidden z-[40] rounded-md'></div>
+          <div className='absolute h-full w-10  bg-white pulse overflow-hidden z-[40] rounded-sm'></div>
 
           <div className='absolute top-2 right-2 w-12 h-2 rounded-md z-20 bg-gray-200'></div>
           <div className='relative w-full h-[160px] bg-gray-300  overflow-hidden '></div>

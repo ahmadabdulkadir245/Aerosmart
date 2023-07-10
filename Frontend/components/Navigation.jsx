@@ -47,7 +47,8 @@ function Navigation() {
 
   const searchIconHandler = (searchWord) => {
     if(searchWord) {
-      // clearSearchHandler()
+      dispatch(setSelectedProduct(product));
+    dispatch(setSelectedProductCategory(product.category));
      return  router.push(`/search/${searchWord}`)
     }else{
       console.log('word not found')
@@ -160,7 +161,7 @@ function Navigation() {
                   <MobileNav showSearch={showSearch} searchHandler={searchHandler} searchWord={searchWord} searchIconHandler={searchIconHandler}  />
 
                   {/* Suggesstions */}
-                 <SearchSuggesstions searchWord={searchWord} pressToSearchHandler={pressToSearchHandler} />
+                 <SearchSuggesstions searchWord={searchWord} setSearchWord={setSearchWord} pressToSearchHandler={pressToSearchHandler} />
 </div>
   )
   };

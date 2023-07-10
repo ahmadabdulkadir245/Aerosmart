@@ -54,7 +54,7 @@ function Banner() {
 
   
   return (
-    <div className='w-full px-[10px] max-w-8xl  lg:flex justify-between  m-auto lg:space-x-3  mt-2 lg:mt-8 transition-all duration-700 ease-out lg:px-[50px]'>
+    <div className='w-full px-[10px] max-w-8xl  lg:flex justify-between  m-auto lg:space-x-3  mt-2 lg:mt-8 transition-all duration-700 ease-out lg:px-[50px] bg-gray-500'>
     {loading ?
     <>
     <Swiper

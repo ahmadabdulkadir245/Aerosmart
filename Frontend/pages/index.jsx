@@ -1,38 +1,44 @@
 import Head from 'next/head'
-import Image from 'next/image'
 import Header from '../components/Header'
-import Banner from '../components/Banner'
 import Footer from '../components/Footer'
-import CategoryIcons from '../components/CategoryIcons'
 import SectionSlider from '../components/SectionSlider'
-import DiscountSlider from '../components/DiscountSlider'
+import ProductSlider from '../components/ProductSlider'
 import ProductFeed from '../components/ProductFeed'
 import { useRouter } from 'next/router'
 import { useEffect, useState, useContext } from 'react'
 import GridSectionSlider from '../components/GridSectionSlider'
 import {AuthContext} from '../context/authContext'
-import Loading from '../components/Loading'
 import DesktopBanner from '../components/DesktopBanner'
 import DesktopCategpry from '../components/DesktopCategpry'
 import FeaturedProducts from '../components/FeaturedProducts'
 import LatestProducts from '../components/LatestProducts'
 import About from '../components/About'
+import HomeLoading from '../components/Loadings/HomeLoading'
+import { useDispatch } from 'react-redux'
+import { getProducts } from '../slices/productSlice'
+import axios from 'axios';
+
 
 
 export default function Home({products}) {
   const router = useRouter()
   const {authToken} = useContext(AuthContext)
-  // console.log(authToken)
-  // const [loading, setLoading] = useState(false)
+  const dispatch = useDispatch()  
+  const [loading, setLoading] = useState(true)
+
     useEffect(() => {
     // let token = sessionStorage.getItem("Token");
     // if (!token) {
     //   router.push("/login");
     // }
-    // setTimeout(() => {
-    //   setLoading(true);
-    // }, 500)
-  }, );
+    // setLoading(true);
+    dispatch(getProducts(products));
+    setTimeout(() => {
+      setLoading(false);
+    }, 300)
+
+  },[loading] );
+  
   return (
     <div>
       <Head>
@@ -41,16 +47,18 @@ export default function Home({products}) {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header/>
-     {/* <Banner/> */}
-     <DesktopBanner/>
+      {loading ? 
+      <HomeLoading />
+      :  
+      <>
+         {/* <Banner/> */}
+         <DesktopBanner/>
     <main className='lg:mt-5 max-w-7xl mx-auto'>
-      <div className="hidden lg:block">
       <DesktopCategpry/>
-      </div>
-      <div className="lg:hidden">
-     <CategoryIcons/>
-      </div>
       <About/>
+     <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
+     <ProductSlider sectionTitle={'discount products'} products={products} path={'/'} bgColor={'bg-gray-300'} discount={true}/>
+
       <div className="hidden lg:block">
       <FeaturedProducts products={products}/>
       <LatestProducts products={products}/>
@@ -62,9 +70,10 @@ export default function Home({products}) {
           <p className="font-bold uppercase ">Products</p>
       </div>
      <ProductFeed/>
-     <DiscountSlider sectionTitle={'discount products'} products={products} />
      </main>
      <Footer />
+    </>
+}
     </div>
 
   )
@@ -72,42 +81,41 @@ export default function Home({products}) {
 
 
 export const getServerSideProps = async (context) => {
-  const page = 1
-  const perPage = 8
-  const graphqlQuery = {
-    query: `
-    {
-      products(page: ${page}, perPage: ${perPage}) {
-        products{
-          id
-          title
-          price
-          image_url
-          description
+  const page = 1;
+  const perPage = 8;
+
+  try {
+    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
+      query: `
+        {
+          products(page: ${page}, perPage: ${perPage}) {
+            products {
+              id
+              title
+              price
+              image_url
+              category
+              quantity
+              description
+            }
+          }
         }
-      }
-    }
-    `
-  };
-   const result = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(graphqlQuery)
-    })
-      .then(res => {  
-        return res.json();
-      })
-      .then(resData => {
-        return resData
-      })
-      .catch(err => console.log(err))
-     
-      const data = await result
+      `,
+    });
+
+    const products = response.data?.data?.products?.products || [];
+
     return {
       props: {
-        products: data?.data?.products?.products || []
-      }
-    }
+        products,
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        products: [],
+      },
+    };
   }
+};

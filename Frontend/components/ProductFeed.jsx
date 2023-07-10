@@ -1,20 +1,23 @@
 import Products from './Products'
 import { useEffect, useState } from 'react'
 import ReactPaginate from "react-paginate";
+import { useSelector } from 'react-redux';
+import { productsRetrieved } from '../slices/productSlice';
 
 
 const ProductFeed = () => {
-  const [products, setProducts] = useState([])
+  // const [products, setProducts] = useState([])
   const [totalPages, setTotalPages] = useState(1)
-  const [page, setPage] = useState(1)
+  const [page, setPage] = useState(0)
   // const perPage = 6
+  const recievedProducts = useSelector(productsRetrieved)
   const perPages = {
-    sm: 6,
-    md: 9,
-    lg: 12
+    sm: 2,
+    md: 3,
+    lg: 4
   };
-  const [perPage, setPerPage] = useState(perPages.sm);
 
+  const [perPage, setPerPage] = useState(perPages.sm);
   useEffect(() => {
     const handleResize = () => {
       const { innerWidth } = window;
@@ -37,41 +40,12 @@ const ProductFeed = () => {
       window.removeEventListener('resize', handleResize);
     };
   }, [perPages.lg, perPages.sm, perPages.md]);
+const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
+
   useEffect(() => {
-    const graphqlQuery = {
-      query: `
-      {
-        products(page: ${page}, perPage: ${perPage}) {
-          products{
-            id
-            title
-            price
-            image_url
-            description
-          }
-          totalPages
-        }
-      }
-      `
-    };
-   fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(graphqlQuery)
-    })
-      .then(res => {  
-        return res.json();
-      })
-      .then(productData => {
-        const recievedData = productData.data?.products?.products || []
-        recievedData.reverse()
-        const productPages = productData.data?.products.totalPages
-        setProducts(recievedData)
-        setTotalPages(productPages)
-      })
-  }, [page, perPage])
+    setTotalPages(Math.ceil(recievedProducts.length / perPage))
+  }, [recievedProducts, perPage])
+  
 
   return (
     <>
@@ -98,9 +72,9 @@ const ProductFeed = () => {
           nextLabel='NEXT'
           pageRangeDisplayed={1}
           pageCount={totalPages}
-          onPageChange={({ selected }) => setPage(selected + 1)}
+          onPageChange={({ selected }) => setPage(selected )}
           renderOnZeroPageCount={null}
-          previousClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer  text-xs hover:bg-gray-300 transition duration-300 ease-in'
+          previousClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer  text-xs hover:bg-gray-300 transition duration-300 ease-in w-full h-full'
           nextClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer text-xs hover:bg-gray-300 transition duration-300 ease-in'
           containerClassName='flex justify-center items-center mx-auto space-x-2'
           pageLinkClassName='flex items-center justify-center capitalize   w-[30px] h-[30px] rounded-sm  border-[1px]  bg-transparent text-xs'

@@ -197,6 +197,8 @@ module.exports = {
           id: product.id,
           title: product.title,
           price: product.price,
+          category: product.category,
+          quantity: product.quantity,
           image_url: product.image_url,
           description: product.description,
           // createdAt: product.createdAt.toISOString(),

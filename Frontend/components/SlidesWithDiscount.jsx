@@ -11,14 +11,14 @@ import { useRouter } from 'next/router';
 // install Virtual module
 SwiperCore.use([Virtual, Navigation, Pagination]);
 
-function SlidesWithDiscount({ slides, prouductsProps}) {
+function SlidesWithDiscount({ slides, products, discount}) {
   const router = useRouter();
-    let products = prouductsProps
+
   return (
     <div>
         <Swiper watchSlidesProgress={true} slidesPerView={slides} spaceBetween={10} className="mySwiper overflow-x-scroll">
         {products.map(product=> (
-           <SwiperSlide key={product.id} onClick={() => router.push(`/products/${product.id}`)} > 
+           <SwiperSlide key={product.id} onClick={() => router.push(`/products/${product.id}`)} className='cursor-pointer'> 
              <div className='relative h-[120px] w-full m-auto  overflow-hidden shadow-sm'>
                  <Image src={product.image_url} alt={product.title} layout='fill' objectFit='cover' priority />
              </div>
@@ -26,8 +26,14 @@ function SlidesWithDiscount({ slides, prouductsProps}) {
                  <p className="font-poppins">
                       {product.title}
                  </p>
-                 <p className='flex items-center space-x-2 S font-changa'><TbCurrencyNaira  className="w-4 h-4"/>{((product.price - (product.price / 2))).toLocaleString()}</p>
+                 {discount ? 
+                 <>
+                            <p className='flex items-center space-x-2 S font-changa'><TbCurrencyNaira  className="w-4 h-4"/>{((product.price - (product.price / 2))).toLocaleString()}</p>
                  <p className='flex items-center space-x-2 text-[10px] text-gray-600 font-changa line-through'><TbCurrencyNaira  className="w-3 h-4"/>{(product.price).toLocaleString()}</p>
+                 </>
+                 :
+                   <p className='flex items-center space-x-2 S font-changa'><TbCurrencyNaira  className="w-4 h-4"/>{((product.price))}</p>
+                }
              </div>
           </SwiperSlide> 
         ))} 

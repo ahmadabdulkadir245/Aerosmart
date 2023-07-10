@@ -181,6 +181,7 @@ app.use('/graphql', graphqlHTTP({
 
 const PORT = process.env.PORT || 8080
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
   console.log("Server is running....")
 })
+server.timeout = 60000
