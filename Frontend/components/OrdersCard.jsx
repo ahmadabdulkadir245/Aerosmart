@@ -1,8 +1,7 @@
-import React from 'react'
 import { TbCurrencyNaira } from 'react-icons/tb'
-const imageSlider = [1,2,3,4,5,6,7,8,9,10]
 
 function OrdersCard() {
+  const imageSlider = [1,2,3]
   return (
     <div className="">
     <div className="flex justify-between items-center bg-gray-300 p-2 rounded-t-sm mt-2 space-x-2">
