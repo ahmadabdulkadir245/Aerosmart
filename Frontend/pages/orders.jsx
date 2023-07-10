@@ -2,7 +2,7 @@ import React from 'react'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
 import { TbCurrencyNaira } from 'react-icons/tb'
-import OrdersCard from '../components/ordersCard'
+import OrdersCard from '../components/OrdersCard'
 
 function orders() {
     const imageSlider = [1,2,3,4,5,6,7,8,9,10]
