@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import CardLoading from './cardLoading'
+import CardLoading from './CardLoading'
 
 function HomeLoading() {
     const cards = {
