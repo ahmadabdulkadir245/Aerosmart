@@ -4,10 +4,10 @@ import OrdersCard from '../components/OrdersCard'
 import { useSelector } from 'react-redux';
 import { selectOrderTotal, selectedOrderItems } from '../slices/orderSlice';
 
-function orders() {
+function Orders() {
+  const orderItems = useSelector(selectedOrderItems);
+  const orderTotal = useSelector(selectOrderTotal)
     const imageSlider = [1,2,3,4,5,6,7,8,9,10]
-    const orderItems = useSelector(selectedOrderItems);
-    const orderTotal = useSelector(selectOrderTotal)
   return (
     <>
         <Header/>
@@ -24,4 +24,4 @@ function orders() {
   )
 }
 
-export default orders
+export default Orders
