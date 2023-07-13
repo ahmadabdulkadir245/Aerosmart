@@ -56,12 +56,12 @@ export default function Home({products}) {
     <main className='lg:mt-5 max-w-7xl mx-auto'>
       <DesktopCategpry/>
       <About/>
-     <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
-     <ProductSlider sectionTitle={'discount products'} products={products} path={'/'} bgColor={'bg-gray-300'} discount={true}/>
+     <ProductSlider sectionTitle={'latest products'} products={products.slice(0, 9)} path={'/'}/>
+     <ProductSlider sectionTitle={'discount products'} products={products.slice(9, 20)} path={'/'} bgColor={'bg-gray-300'} discount={true}/>
 
       <div className="hidden lg:block">
-      <FeaturedProducts products={products}/>
-      <LatestProducts products={products}/>
+      <FeaturedProducts products={products.slice(0, 9)}/>
+      <LatestProducts products={products.slice(9, 20)}/>
       </div>
      <SectionSlider sectionTitle={'latest products'} products={products}/>
      <GridSectionSlider sectionTitle={'top selling products'} products={products} />
@@ -82,7 +82,7 @@ export default function Home({products}) {
 
 export const getServerSideProps = async (context) => {
   const page = 1;
-  const perPage = 8;
+  const perPage = 100;
 
   try {
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {

@@ -149,7 +149,7 @@ const AddProduct = () => {
           message: ''
         })
         setSuccess(false)
-      }, 3000);
+      }, 1000);
     })
     })
     .catch(err => console.log(err))
@@ -226,7 +226,7 @@ const updateDataHandler = () => {
             message: ''
           })
           setSuccess(false)
-        }, 3000);
+        }, 1000);
       })
         .catch(err => console.log(err))
       })
@@ -286,7 +286,7 @@ const updateDataHandler = () => {
           message: ''
         })
         setSuccess(false)
-      }, 3000);
+      }, 1000);
       })
       .catch(err => console.log(err))
   }
@@ -326,7 +326,7 @@ const updateDataHandler = () => {
       }
           <input
         type='text'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] w-full  m-auto flex mb-5 lg:my-5'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex mb-5 lg:my-5'
         placeholder='product name'
         required
         name="title"
@@ -336,7 +336,7 @@ const updateDataHandler = () => {
       <div className="flex space-x-4 mb-5">
       <input
         type='number'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] w-[50%]  m-auto flex  lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-[50%]  m-auto flex  lg:my-8'
         placeholder='price'
         name="price"
         required
@@ -345,7 +345,7 @@ const updateDataHandler = () => {
       />
       <input
         type='number'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] w-[50%]  m-auto flex  lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-[50%]  m-auto flex  lg:my-8'
         placeholder='quantity'
         name="quantity"
         required
@@ -356,7 +356,7 @@ const updateDataHandler = () => {
 
       <input
         type='text'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] w-full  m-auto flex mb-5 lg:my-5'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex mb-5 lg:my-5'
         placeholder='product category'
         required
         name="category"
@@ -366,7 +366,7 @@ const updateDataHandler = () => {
 
       <input
         type='file'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] w-full  m-auto flex my-6 lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex my-6 lg:my-8'
         placeholder='image url'
         name="image_url"
         required

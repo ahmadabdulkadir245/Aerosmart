@@ -173,11 +173,11 @@ function SearchResultPage({products}) {
       </div>
 
       <div className="max-w-7xl mx-auto">
-      <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
+      <ProductSlider sectionTitle={'latest products'} products={products.slice(0, 9)} path={'/'}/>
 
-      <ProductSlider sectionTitle={'top selling'} products={products} path={'/'}   discount={true} />
+      <ProductSlider sectionTitle={'top selling'} products={products.slice(9, 20)} path={'/'}   discount={true} />
 
-      <ProductSlider sectionTitle={'discount products'} products={products.reverse()} path={'/'}   discount={true}  bgColor={'bg-gray-400'}/>
+      <ProductSlider sectionTitle={'discount products'} products={products.slice(21, 30)} path={'/'}   discount={true}  bgColor={'bg-gray-400'}/>
       </div>
 
 
@@ -192,7 +192,7 @@ export default SearchResultPage
 
 export const getServerSideProps = async (context) => {
   const page = 1;
-  const perPage = 8;
+  const perPage = 100;
 
   try {
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {

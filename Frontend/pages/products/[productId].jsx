@@ -20,7 +20,7 @@ function Product({product, products}) {
   const dispatch = useDispatch()
   const addProductToCart = (checkout) => {
     const Product = {
-    id:  product.prodId,
+    id:  prodId,
       title: product.title,
      price: product. price,
       description: product.description,
@@ -152,9 +152,9 @@ function Product({product, products}) {
       </div>
       
         <div className="max-w-7xl mx-auto">
-      <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
+      <ProductSlider sectionTitle={'latest products'} products={products.slice(0,9)} path={'/'}/>
 
-      <ProductSlider sectionTitle={'discount products'} products={products} path={'/'} discount={true}/>
+      <ProductSlider sectionTitle={'discount products'} products={products.slice(10, 19)} path={'/'} discount={true}/>
         </div>
 
     <Footer/>
@@ -170,7 +170,7 @@ export default Product
 export const getServerSideProps = async (context) => {
   const { productId } = context.query;
   const page = 1;
-  const perPage = 8;
+  const perPage = 100;
 
   try {
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {

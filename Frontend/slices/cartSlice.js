@@ -12,7 +12,6 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = state.cartItems.find(cartItem => cartItem.product.id == action.payload.id )
-      console.log(item)
       if(item) item.qty++
       else {
         state.cartItems.unshift({

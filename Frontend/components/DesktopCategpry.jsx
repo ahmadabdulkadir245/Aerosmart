@@ -1,7 +1,8 @@
 import Image from 'next/legacy/image'
-import React from 'react'
+import {useRouter} from 'next/router'
 
 function DesktopCategpry() {
+    const router = useRouter()
     const categories = [
         {
         id: 1,
@@ -76,6 +77,7 @@ function DesktopCategpry() {
         items: 20
         },
 ]
+
   return (
     <div  className='grid grid-cols-4  gap-2 lg:gap-8 mx-auto max-w-7xl bg-white p-6 my-10 font-poppins text-gray-800'>
         <div className="col-span-4">
@@ -85,14 +87,14 @@ function DesktopCategpry() {
         </div>
 
         {categories.map(category => (
-            <div className="bg-white" key={category.id}>
+            <div className="bg-white" key={category.id} onClick={() => router.push(`/search/${category.category}`)}>
                 <div className='lg:flex flex-row-reverse justify-between items-center text-xs cursor-pointer'>
                     <div className="relative bg-gray-300 w-full h-[80px] lg:w-[120px] lg:h-[80px] rounded-md overflow-hidden">
                         <Image src={category.Image} alt={category.category}  objectFit='cover' layout='fill'/>
                     </div>
                     <div className='mt-1 lg:mt-0'>
                     <p className='text-xs lg:text-sm tracking-wide capitalize mb-[2px]'>{category.category}</p>
-                    <p className="text-gray-400">
+                    <p className="text-gray-400 hidden lg:block">
                         {category.items} items
                     </p>
                         </div>  

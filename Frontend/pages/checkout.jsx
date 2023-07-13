@@ -34,7 +34,7 @@ function CheckoutPage() {
     <div className="">
       <Header />
         <div className="mx-auto max-w-5xl">
-      <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
+      {/* <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
                 1. review your order ({orderItems.length} {orderItems.length < 2 ? 'item' : 'items'})
             </h2>
             <div className="max-h-[360px] overflow-y-scroll scrollbar-hide">
@@ -51,7 +51,7 @@ function CheckoutPage() {
               />
               )
               )}
-              </div>
+              </div> */}
         <div className='px-3'>
         <div className='flex justify-between bg-gray-200 shodow-lg  p-2 text-gray-700 my-4'>
           <div className='capitalize font-bold'>subtotal:</div>
@@ -59,11 +59,10 @@ function CheckoutPage() {
         </div>
         </div>
 
-            <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
 
       <div className='px-3 mb-4'>
         <div className="flex justify-between items-center">
-        <h2 className='uppercase text-gray-700 my-2'>2. delivery type</h2>
+        <h2 className='uppercase text-gray-700 my-2'>1. delivery type</h2>
         </div>
         <div className="bg-white w-full text-xs px-2 py-4 space-y-3">
           <div className="">
@@ -83,6 +82,9 @@ function CheckoutPage() {
         </div>
       </div>
 
+      <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto mb-2c'></div>
+
+
 
       <div className='px-3 mb-4'>
         <div className="flex justify-between items-center">
@@ -100,7 +102,7 @@ function CheckoutPage() {
             {/* Pament section */}
             <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
             <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
-                4. pamentemt
+                3. pamentemt
             </h2>
             
 
@@ -154,7 +156,7 @@ function CheckoutPage() {
                 </div>
                 <div className='my-4 px-2'>
                   <div className='flex space-x-4'>
-                        <input type="checkbox"/> 
+                        <input type="checkbox" className='cursor-pointer'/> 
                         <p className='text-xs'>Email me about new products, deals and discounts.</p>
                   </div>
                   

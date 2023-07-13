@@ -126,7 +126,7 @@ function Navigation() {
                 :  
                   <Link href='/account'>
                      <div className='hover:text-[#f7b32b] transition-all duration-500 linear '>
-                        <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 flex justify-center ' />
+                        <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 flex justify-center mx-auto' />
                      <p className='hidden lg:inline font-semiold md:text-xs font-titilliumWeb link capitalize text-center'>
                     my account
                   </p>
