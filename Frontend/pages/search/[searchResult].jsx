@@ -28,9 +28,9 @@ function SearchResultPage({products}) {
 
   // perPage function to render different amount of pages for each device
   const perPages = {
-    sm: 2,
-    md: 2,
-    lg: 2
+    sm: 8,
+    md: 12,
+    lg: 12
   };
   const [perPage, setPerPage] = useState(perPages.sm);
   const searchProducts = searchFilter.slice(perPage * page, perPage * (page + 1))

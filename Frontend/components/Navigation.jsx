@@ -116,14 +116,6 @@ function Navigation() {
                     className={`  lg:hidden w-6 h-6 lg:w-7 lg:h-7 ${showSearch ? 'hidden': ''}`}
                 onClick={showSearchHandler}
                   />
-                  {authToken ?
-                      <div className='hover:text-[rgb(247,179,43)] transition-all duration-500 linear' onClick={logoutHandler}>
-                      <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 ' />
-                   <p className='hidden lg:inline font-semiold md:text-xs font-titilliumWeb link'>
-                  Logout
-                </p>
-                </div>
-                :  
                   <Link href='/account'>
                      <div className='hover:text-[#f7b32b] transition-all duration-500 linear '>
                         <RiUser3Line className='w-6 h-6 lg:w-7 lg:h-5 flex justify-center mx-auto' />
@@ -132,7 +124,7 @@ function Navigation() {
                   </p>
                   </div>
                   </Link>
-                }
+                
                 </div>
 
                 <div
@@ -147,16 +139,16 @@ function Navigation() {
                     Cart
                   </p>
                 </div>
-                {authToken && 
-                <div className='hidden lg:flex space-x-4 items-center'>
+              </div>
+
+                    
+                  </nav>
+                  {authToken && 
+                <div className='hidden lg:flex space-x-4 items-center bg-gray-50  mx-auto px-[50px] py-2 '>
                   <Link href='/admin/products'>Admin Products</Link>
                   <Link href='/admin/add-product'>Add Product</Link>
                 </div>
                 }
-              </div>
-
-
-  </nav>
                  {/* search for mobile */}
                   <MobileNav showSearch={showSearch} searchHandler={searchHandler} searchWord={searchWord} searchIconHandler={searchIconHandler}  />
 

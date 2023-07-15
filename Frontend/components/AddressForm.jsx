@@ -2,72 +2,45 @@ import React from 'react'
 
 function AddressForm() {
   return (
-    <div>
-           <p className='text-xs capitalize'>all fields required</p>
-
-<form className='my-3'>
-
-<input
-      type='text'
-      className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-      placeholder='Email '
-      required
-      // onChange={passwordInputHandler}
-    />
-<input
-      type='text'
-      className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-      placeholder='First Name'
-      required
-      // onChange={passwordInputHandler}
-    />
-<input
-      type='text'
-      className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-      placeholder='Last Name '
-      required
-      // onChange={passwordInputHandler}
-    />
-      
-     <input
-        type='number'
-        className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-        placeholder='Phone Number e.g 081 '
-        required
-        // onChange={passwordInputHandler}
-      />
-     <input
-        type='text'
-        className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-        placeholder='Devivery address '
-        required
-        // onChange={passwordInputHandler}
-      />
-
-  <select className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5 text-gray-500'>
-    <option>select state</option>
-    <option>Abuja</option>
-    <option>Ibadan</option>
-    <option>Kaduna</option>
-    <option>Katsina</option>
-    <option>Port Harcourt</option>
-    <option>Lagos</option>
-  </select>
-
-<input
-      type='text'
-      className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-      placeholder='Postcode  / Zip Code. optional '
-      required
-      // onChange={passwordInputHandler}
-    />
-
-<select className='border-[1px] lg:border-[1px] rounded-lg md:rounded-full  border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5 text-gray-700'>
-    <option>Nigeria</option>
-  </select>
-    
-</form>
+ 
+    <form action="" className="grid grid-cols-2 gap-x-8 gap-y-4 text-xs my-3">
+    <div className="col-span-2 lg:col-span-1 w-full"> 
+    <input type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400" placeholder="First Name" />
     </div>
+    <div className="col-span-2 lg:col-span-1  w-full"> 
+    <input type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400" placeholder="Last Name" />
+    </div>
+    <div className="col-span-2 lg:col-span-1  w-full"> 
+    <input type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400" placeholder="Phone Number e.g 081" />
+    </div>
+    <div className="col-span-2 lg:col-span-1  w-full"> 
+    <input type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400" placeholder="Additional Phone Number e.g 080" />
+    </div>
+    <div className="col-span-2 w-full"> 
+    <input type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400" placeholder="Delivery Address" />
+    </div>
+    <div className="col-span-1 w-full"> 
+    <select type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400 text-gray-400 cursor-pointer capitalize" placeholder="Additional Phone Number e.g 080">
+      <option>Select State</option>
+      <option>abuja</option>
+      <option>kaduna</option>
+      <option>lagos</option>
+    </select>
+    </div>
+    <div className="col-span-1 w-full"> 
+    <select type="text" className="border-2 border-gray-300 rounded-md px-2 py-[14px] outline-none w-full focus:ring-2 focus:border-transparent ring-green-400 text-gray-400 cursor-pointer capitalize" placeholder="Additional Phone Number e.g 080">
+      <option>Select Local Gov</option>
+      <option>chikun</option>
+    </select>
+    </div>
+    <div className="col-span-2 w-full flex justify-center text-xs"> 
+    <button className=" w-[400px] bg-green-400 text-white  p-3 rounded-md capitalize hover:bg-green-500 transition-all delay-100 tracking-wide "
+       >
+      save
+    </button>
+    </div>
+  </form>
+
   )
 }
 

@@ -2,7 +2,6 @@ import Image from 'next/legacy/image'
 import { TbCurrencyNaira } from 'react-icons/tb'
 
 function OrdersCard({ total,orders,}) {
-  console.log(orders)
   const imageSlider = [1,2,3]
   return (
     <div className="">
@@ -25,10 +24,10 @@ function OrdersCard({ total,orders,}) {
 
     <div className="flex justify-between items-center overflow-x-scroll w-full bg-white p-2 scrollbar-hide">
     <div className="flex items-center space-x-2 my-1 w-full      lg:my-2 lg:w-[200px]   scrollbar-hide">
-{orders.map((order, index) => (
+{orders.map (({ product, qty}) => (
 
-<div key={index} className="relative   w-[100px] min-w-[80px] h-[60px]  overflow-hidden rounded-md border-[3px]  cursor-pointer hover:border-blue-500 p-4">
-<Image src={order.image_url} alt={'order'} layout="fill" objectFit="cover"/>
+<div key={product.id} className="relative   w-[100px] min-w-[80px] h-[60px]  overflow-hidden rounded-md border-[3px]  cursor-pointer hover:border-blue-500 p-4">
+<Image src={product.image_url} alt={'order'} layout="fill" objectFit="cover"/>
 </div>
 ))}
 </div>

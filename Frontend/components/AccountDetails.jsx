@@ -4,7 +4,7 @@ import { MdCall } from "react-icons/md"
 function AccountDetails() {
   return (
     <div className='col-span-3'>
-           <div className="flex justify-between bg-white">
+           <div className="lg:flex justify-between bg-white">
               <div className="py-4 px-4  font-poppins rounded-md w-full">
               <div className="">
                 <div className="bg-gray-200 p-2 rounded-sm ">
@@ -34,13 +34,11 @@ function AccountDetails() {
       required
       // onChange={passwordInputHandler}
     />
-
-    
 </form>
 
               </div>
       </div>
-             <div className="py-4  bg-white font-poppins rounded-md w-full">
+             <div className="px-4 lg:py-4  bg-white font-poppins rounded-md w-full">
               <div className="">
                 <div className="bg-gray-200 p-2 rounded-sm flex justify-between items-center">
                   <h2 className="capitalize ">home address</h2>

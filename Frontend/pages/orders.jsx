@@ -8,6 +8,7 @@ function Orders() {
   const orderItems = useSelector(selectedOrderItems);
   const orderTotal = useSelector(selectOrderTotal)
     const imageSlider = [1,2,3,4,5,6,7,8,9,10]
+    console.log(orderItems)
   return (
     <>
         <Header/>
