@@ -3,26 +3,74 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux"
 import {TbCurrencyNaira} from "react-icons/tb"
-import { addToCart } from "../slices/cartSlice";
+import { getUserIdFromCookie } from "../utils/user_id";
+import { addToCart } from "../slices/cartItemsSlice";
 
-const Products = ({ id, title, price, description, image_url , category}) => {
-    const [loading, setLoading] = useState(false);
+const Products = ({ id, title, price, description, image_url , category, authToken, user_id}) => {
+    const [loading, setLoading] = useState(false)
     useEffect(() => {
-      setTimeout(() => {
-        setLoading(true);
-      }, 300);
-    }, []);
+      setTimeout(() =>{
+        setLoading(true)
+      }, 300)
+    }, [loading])
+    
     const dispatch = useDispatch();
-    const addProductToCart = () => {
-      const Product = {
-        id,
-        title,
-        price,
-        description,
-        image_url,
-      };
-      dispatch(addToCart(Product));
-    };
+    // const addProductToCart = () => {
+    //   const Product = {
+    //     id,
+    //     title,
+    //     price,
+    //     description,
+    //     image_url,
+    //   };
+    //   dispatch(addToCart(Product));
+    // };
+
+    const addProductToCart = (e) => {
+      if(!authToken) {
+        const Product = {
+          id,
+          title,
+          price,
+          description,
+          image_url,
+        };
+        dispatch(addToCart(Product));
+        return
+      }
+
+      e.preventDefault()
+        let graphqlQuery = {
+         query: `
+         mutation AddToCart($user_id: Int, $quantity: Int, $product_id: Int) {
+           addToCart(cartInput: {user_id: $user_id, product_id: $product_id, quantity: $quantity}) {
+             user_id
+             product_id
+             quantity
+           }
+         }
+       `,
+         variables: {
+           user_id: Number(user_id),
+           product_id: Number(id),
+           quantity: 1
+         }
+       };
+
+
+       fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(graphqlQuery)
+      })
+        .then(res => {  
+          // console.log(res.json())
+          return res.json();
+        })
+      }
+  
   return (
     <>
       {loading ? (
@@ -47,7 +95,7 @@ const Products = ({ id, title, price, description, image_url , category}) => {
         <p  dangerouslySetInnerHTML={{ __html: description }} 
       />
         </div>
-          <div className='  font-primary px-2 flex items-center space-x-1 text-xs  mt-[2px] text-gray-800'>
+          <div className='  font-changa px-2 flex items-center space-x-1 text-xs  mt-[2px] text-gray-800'>
             <TbCurrencyNaira  className="w-4 h-4 text-gray-600"/>{price.toLocaleString()}
           </div>
 

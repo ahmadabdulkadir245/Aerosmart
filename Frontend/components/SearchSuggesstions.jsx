@@ -40,44 +40,8 @@ const clearSearchWordCategoryHandler =(id) => {
 const clearSearchWordHandler =(id) => {
   setSearchWord("") 
 }
-
-  
-    // .map((product) => product.category);
-  //   useEffect(() => {
-  //     if(searchWord.length > 2) {
-
-  //         let graphqlQuery  = {
-  //           query: `
-  //           {
-  //             searchList(word: "${searchWord}") {
-  //              searchList {
-  //               id
-  //               title
-  //             }
-  //             }
-  //           }
-  //           `
-  //          }
-  //          fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json'
-  //           },
-  //           body: JSON.stringify(graphqlQuery)
-  //         })
-  //           .then(res => {  
-  //             return res.json();
-  //           })
-  //           .then(productData => {
-  //             const recievedData = productData.data?.searchList?.searchList || []
-  //             recievedData.reverse()
-  //             setProducts(recievedData)
-  //           })
-  //       }
-  //     }, [searchWord])
-  const conditions =  filteredCategories !== [] && filteredProducts !== []
   return (
-    <div className={`${searchWord.length > 2 ? '' : 'hidden'} relative bg-gray-50 text-gray-700  w-full max-w-5xl  text-xs font-poppins mx-auto h-[30vh] lg:h-[50vh] rounded-b-lg shadow-lg overflow-y-scroll mb-3  scrollbar-hide transition-all duration-500 ease-in`}>
+    <div className={`${searchWord.length > 2 ? '' : 'hidden'} absolute lg:relative  bg-gray-50 text-gray-700  w-full max-w-5xl  text-xs font-poppins mx-auto h-[30vh] lg:h-[50vh] rounded-b-lg shadow-lg overflow-y-scroll mb-3  scrollbar-hide transition-all duration-500 ease-in`}>
  
         <div className="w-full bg-gray-300 p-2 uppercase rounded-md">
             product categories

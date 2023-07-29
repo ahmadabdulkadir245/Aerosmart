@@ -20,18 +20,39 @@ module.exports = buildSchema(`
     }
 
     type User {
-        id: ID!
-        name: String!
-        email: String!
+        id: ID
+        email: String
+        first_name: String
+        last_name: String
         password: String
-        isAdmin: String!
-        products: [Product!]!
+        isAdmin: String
+    }
+
+    type Address {
+        id: Int
+        user_id: Int
+        first_name: String
+        last_name: String
+        address_line_1: String
+        address_line_2: String
+        phone_number_1: String
+        phone_number_2: String
+        city: String
+        state: String
+        is_default: Boolean
     }
 
     type Cart {
+        id: Int
+        quantity: Int
+        product_id: Int
         user_id: Int
-        qty: Int
-        productId: Int
+    }
+
+    type Wishlist {
+        id: Int
+        user_id: Int
+        product_id: Int
     }
 
     type searchSuggessions {
@@ -66,13 +87,24 @@ module.exports = buildSchema(`
         totalPages: Int!
     }
 
+    type UserData {
+        users: [User]
+    }
+
     type BannerData {
         banners: [Banner]!
     }
 
+    type AddressData {
+        addresses: [Address]!
+    }
 
     type CartData {
         carts: [Cart]!
+    }
+
+    type WishlistData {
+        wishlists: [Wishlist]!
     }
 
     input BannerInputData {
@@ -86,11 +118,33 @@ module.exports = buildSchema(`
         password: String!
     }
 
+    input UsernameInputData {
+        id: Int
+        first_name: String
+        last_name: String
+    }
+
+    input AddressInput {
+        user_id: Int
+        first_name: String
+        last_name: String
+        address_line_1: String
+        address_line_2: String
+        phone_number_1: String
+        phone_number_2: String
+        city: String
+        state: String
+    }
 
     input CartInputData {
+        quantity: Int
+        product_id: Int
         user_id: Int
-        qty: Int
-        product: Int
+    }
+
+    input WishlistInputData {
+        user_id: Int
+        product_id: Int
     }
 
     input ProductInputData {
@@ -109,19 +163,31 @@ module.exports = buildSchema(`
         product(id: ID!): Product!
         searchList(word: String): searchSuggessionData!
         search(word: String!, page: Int, perPage: Int): SearchedProductsData!
-        user: User!
-        cart(user_id: Int): ProductData!
+        users: UserData
+        user(id: Int): User
+        cart(user_id: Int): CartData!
+        wishlists(user_id: Int): WishlistData!
+        productsInCart(ids: [Int]): [Product]
         banners: BannerData!
+        addresses(user_id: Int): AddressData
     }
 
     type RootMutation {
         createUser(userInput: UserInputData): User!
+        updateUsername(usernameInput: UsernameInputData): User
         createBanner(bannerInput: BannerInputData): Banner!
         createProduct(productInput: ProductInputData): Product!
-        addTocart(cartInput: CartInputData): Cart
+        addToCart(cartInput: CartInputData): Cart
+        addToWishlist(wishlistInput: WishlistInputData): Wishlist
+        deleteWishlist(user_id: Int, wishlist_id: Int): Boolean
+        removeFromCart(user_id: Int, cart_item_id: Int): Boolean
         updateProduct(id: Int!, productInput: ProductInputData): Product!
         deleteProduct(id: Int): Boolean
         updateStatus(status: String!): User!
+        createAddress(addressInput: AddressInput): Address
+        updateAddress(id: Int!, addressInput: AddressInput): Address!
+        deleteAddress(user_id: Int, address_id: Int): Boolean
+        setDefaultAddress(user_id: Int, address_id: Int): Boolean
     }
 
     schema {

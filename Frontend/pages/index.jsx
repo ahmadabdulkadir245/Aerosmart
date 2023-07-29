@@ -17,12 +17,12 @@ import HomeLoading from '../components/Loadings/HomeLoading'
 import { useDispatch } from 'react-redux'
 import { getProducts } from '../slices/productSlice'
 import axios from 'axios';
+import { getAuthTokenFromCookie, getUserIDFromCookie } from '../utils/cookie'
 
 
 
-export default function Home({products}) {
+export default function Home({products, authToken, user_id}) {
   const router = useRouter()
-  const {authToken} = useContext(AuthContext)
   const dispatch = useDispatch()  
   const [loading, setLoading] = useState(true)
 
@@ -69,7 +69,7 @@ export default function Home({products}) {
      <div className="flex items-center py-2 px-3 justify-center bg-gray-300 p-2 text-gray-700  mb-2 text-center lg:hidden">
           <p className="font-bold uppercase ">Products</p>
       </div>
-     <ProductFeed/>
+     <ProductFeed  authToken={authToken}  user_id={user_id} />
      </main>
      <Footer />
     </>
@@ -83,6 +83,8 @@ export default function Home({products}) {
 export const getServerSideProps = async (context) => {
   const page = 1;
   const perPage = 100;
+  const user_id = getUserIDFromCookie(context.req);
+  const authToken = getAuthTokenFromCookie(context.req);
 
   try {
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
@@ -107,7 +109,9 @@ export const getServerSideProps = async (context) => {
 
     return {
       props: {
-        products,
+        authToken,
+        user_id,
+        products
       },
     };
   } catch (error) {

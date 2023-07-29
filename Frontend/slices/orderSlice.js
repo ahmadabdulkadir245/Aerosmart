@@ -40,9 +40,22 @@ export const selectedOrderItemsProduct = (state) => state.order.orderItems.produ
 export const selectProductTotal = (state) =>
   state.order.orderItems.reduce((total, orderItem) => total +=  orderItem.qty * orderItem.product.price, 0);
 
-export const selectOrderTotal = (state) =>
-  state.order.orderItems.reduce((total, orderItem) => total +=  orderItem.qty * orderItem.product.price, 0);
+// export const selectOrderTotal = (state) =>
+//   state.order.orderItems.reduce((total, orderItem) => total +=  orderItem.qty * orderItem.product.price, 0);
 
-export default orderSlice.reducer;
+// export default orderSlice.reducer;
 
+export const selectOrderTotal = (state) => {
+  const { cartItems, products } = state.order.orderItems;
 
+  // Calculate the total price
+  const totalPrice = cartItems.reduce((total, cartItem) => {
+    const product = products.find((item) => item.id === cartItem.product_id);
+    if (product) {
+      total += cartItem.quantity * product.price;
+    }
+    return total;
+  }, 0);
+
+  return totalPrice;
+};

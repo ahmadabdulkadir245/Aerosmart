@@ -78,7 +78,6 @@ const AddProduct = () => {
   const handleFileInputChange = (event) => {
     setImage(event.target.files[0]);
   };
-  console.log(image)
 
   const addProductHandler = (e) => {
     e.preventDefault()

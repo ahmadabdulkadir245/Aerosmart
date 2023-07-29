@@ -12,28 +12,129 @@ import { TbCurrencyNaira } from "react-icons/tb";
 import { ImFacebook, ImWhatsapp } from "react-icons/im";
 import { BsStarFill, BsStarHalf, BsTwitter } from "react-icons/bs";
 import { productsRetrieved } from "../../slices/productSlice";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { CartContext } from "../../context/cartContext";
+import { getUserIDFromCookie } from "../../utils/cookie";
 
-function Product({product, products}) {
+
+function Product({product, products, user_id}) {
   const router = useRouter()
   const prodId = router.query.productId
   const dispatch = useDispatch()
-  const addProductToCart = (checkout) => {
-    const Product = {
-    id:  prodId,
-      title: product.title,
-     price: product. price,
-      description: product.description,
-      image_url: product.image_url,
-    };
-    dispatch(addToCart(Product));
-    if(checkout == true) {
-      router.push('/checkout')
-    }
-  }
+  const {addProductToCart} = useContext(CartContext)
+  const addToCart = (e) => {
+    e.preventDefault()
+    let graphqlQuery = {
+     query: `
+     mutation AddToCart($user_id: Int, $quantity: Int, $product_id: Int) {
+       addToCart(cartInput: {user_id: $user_id, product_id: $product_id, quantity: $quantity}) {
+         user_id
+         product_id
+         quantity
+       }
+     }
+   `,
+     variables: {
+       user_id: Number(user_id),
+       product_id: Number(prodId),
+       quantity: 1
+     }
+   };
 
-  
+
+   fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(graphqlQuery)
+  })
+    .then(res => {  
+      // console.log(res.json())
+      return res.json();
+    })
+  }
+  const [wishlists, setWishlists] = useState([])
+  console.log(wishlists)
+  useEffect(() => {
+    if(!user_id ) {
+      return
+    }
+    const fetchWishlist= async () => {
+      try {
+
+        const graphqlQuery = {
+          query: `
+            query FetchWishlists($user_id: Int!) {
+              wishlists(user_id: $user_id) {
+                wishlists {
+                  id
+                  user_id
+                  product_id
+                }
+              }
+            }
+          `,
+          variables: {
+            user_id: Number(user_id)
+          },
+        };
+
+        const response = await axios.post(
+          process.env.NEXT_PUBLIC_GRAPHQL_URL,
+          graphqlQuery
+        );
+        const result = await response.data;
+        // Assuming the response.data has the format { data: { addresses: { addresses: [] } } }
+        setWishlists(result.data.wishlists.wishlists);
+        // setDefaultAddress(result.)
+        // setLoading(false);
+      } catch (error) {
+        console.error('Error fetching addresses:', error);
+        // setLoading(false);
+      }
+    };
+    fetchWishlist();
+  }, [user_id, prodId]);
+
+
+    const addWishlist = async () => {
+      if(!user_id ) {
+        return
+      }
+        const graphqlQuery = {
+          query: `
+            mutation AddToWishlist($user_id: Int, $product_id: Int) {
+              addToWishlist(wishlistInput:
+                {user_id: $user_id,
+                product_id: $product_id})
+              {
+                user_id
+                product_id
+              }
+            }
+          `,
+          variables: {
+            user_id: Number(user_id),
+            product_id: Number(prodId)
+
+          },
+        };
+
+        const response = await axios.post(
+          process.env.NEXT_PUBLIC_GRAPHQL_URL,
+          graphqlQuery
+        );
+        const result = await response.data;
+      } 
+      function isProductInWishlist(array, product_id) {
+        return array.some(item => item.product_id == prodId);
+      }
+      const wishlistExists = isProductInWishlist(wishlists, prodId);
+      
+      console.log(wishlistExists)
   const imageSlider = [1,2,3,4,5]
+
 
   return (
     <>
@@ -113,7 +214,7 @@ function Product({product, products}) {
              </div>
 
           <div className="flex justify-between space-x-5">
-         <div className="capitalize w-[15%] lg:w-[200px] h-[48px] lg rounded-md border-[1px] border-gray-300 flex items-center justify-center mt-4 m-auto cursor-pointer space-x-3 hover:bg-yellow-500 hover:border-white hover:text-white transition-all delay-100 ease-in" onClick={addProductToCart}>
+         <div className="capitalize w-[15%] lg:w-[200px] h-[48px] lg rounded-md border-[1px] border-gray-300 flex items-center justify-center mt-4 m-auto cursor-pointer space-x-3 hover:bg-yellow-500 hover:border-white hover:text-white transition-all delay-100 ease-in" onClick={addToCart}>
           <CiShoppingCart className="w-7 h-7  flex justify-between "/>
           <div className="hidden lg:flex">add to cart</div>
          </div>
@@ -133,9 +234,9 @@ function Product({product, products}) {
               </div>
             </div>
 
-            <div className="flex items-center justify-center text-white  space-x-2 cursor-pointer bg-gray-300 rounded-full  w-[100px] h-[35px] hover:bg-red-500 transition-all delay-100">
+            <div className={`flex items-center justify-center text-white  space-x-2 cursor-pointer ${wishlistExists ? 'bg-red-500' : 'bg-gray-400'} rounded-full  w-[100px] h-[35px] hover:bg-red-500 transition-all delay-100`}  onClick={wishlistExists ? '' : addWishlist} >
             <AiFillHeart className="w-5 h-5"/>
-            <p className="">1000</p>
+            <p className="font-changa">1000</p>
             </div>
           </div>
     </div>
@@ -171,6 +272,8 @@ export const getServerSideProps = async (context) => {
   const { productId } = context.query;
   const page = 1;
   const perPage = 100;
+  const user_id = getUserIDFromCookie(context.req);
+
 
   try {
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
@@ -206,6 +309,7 @@ export const getServerSideProps = async (context) => {
       props: {
         product,
         products,
+        user_id
       },
     };
   } catch (error) {

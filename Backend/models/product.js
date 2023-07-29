@@ -34,15 +34,17 @@ module.exports = class Product {
   }
 
 
-  static async findByCart(cartId) {
-    const query = `
-      SELECT productId
-      FROM cartItems
-      JOIN products ON cartItems.productId = products.id
-      WHERE cartItems.cartId = ?;
-    `;
-    const [rows] = await db.execute(query, [cartId]);
-    return rows;
+  static async fetchProductsInCart(ids) {
+    try {
+      // ids should be an array of product_ids
+      const placeholders = ids.map((id) => '?').join(',');
+      const sql = `SELECT * FROM products WHERE id IN (${placeholders})`;
+      const [rows, fields] = await db.execute(sql, ids);
+      return rows;
+    } catch (error) {
+      console.error('Error fetching products in cart from the database:', error);
+      throw new Error('Error fetching products in cart from the database');
+    }
   }
 
   static findById(id) {

@@ -1,5 +1,5 @@
 import { RecoilRoot } from 'recoil';
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { store } from "../redux-store/store";
 import Header from '../components/Header'
 import '../styles/globals.css'
@@ -7,8 +7,10 @@ import Footer from '../components/Footer';
 import { AuthContextProvider } from '../context/authContext';
 
 
-
 import {  Changa, Play, Poppins, Titillium_Web } from '@next/font/google';
+import { CartContextProvider } from '../context/cartContext';
+import { fetchCartItems } from '../slices/cartItemsSlice';
+
 
 const play = Play({
   variable: '--font-play',
@@ -32,15 +34,19 @@ const titilliumWeb = Titillium_Web({
 })
 
 
+// store.dispatch(fetchProductById([20]));
+store.dispatch(fetchCartItems());
+function MyApp({ Component, pageProps  }) {
 
-function MyApp({ Component, pageProps }) {
   return (
     <main className={`font-primary ${play.variable} ${changa.variable} ${poppins.variable}  ${titilliumWeb.variable}`}>
     <Provider store={store}>
     <RecoilRoot>
       {/* <Header /> */}
       <AuthContextProvider>
+        <CartContextProvider>
       <Component {...pageProps} />
+        </CartContextProvider>
       </AuthContextProvider>
     </RecoilRoot>
     {/* <Footer /> */}
@@ -49,4 +55,16 @@ function MyApp({ Component, pageProps }) {
   );
 }
 
+
+
 export default MyApp
+
+
+
+
+
+
+
+
+
+

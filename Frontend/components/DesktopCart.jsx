@@ -1,24 +1,40 @@
 import Image from 'next/legacy/image'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useDispatch } from "react-redux";
 import { minusFromCart, addToCart, removeFromCart } from "../slices/cartSlice";
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { TbCurrencyNaira } from 'react-icons/tb';
+import { CartContext } from '../context/cartContext';
+import { addQuantity, deleteCartItem, reduceQuantity } from '../slices/cartItemsSlice';
 
-function DesktopCart({ id, title, productQty, price, description, image_url }) {
+function DesktopCart({ id, title, productQty, price, description, image_url, onRemove, user_id, authToken }) {
     const dispatch = useDispatch();
+  const {addProductToCart} = useContext(CartContext)
     const minusOneItemFromCart = () => {
       // remove the item from redux
       if (productQty < 2) {
         return;
       }
-      dispatch(minusFromCart({ id }));
+      if(!authToken) {
+        dispatch(reduceQuantity({ id }));
+        return
+      }
+      addProductToCart(Number(user_id), Number(id), -1)
+
     };
     const addOneItemToCart = () => {
-          dispatch(addToCart({id}))
+      if(!authToken) {
+        dispatch(addQuantity({id}))
+        return
+      }
+          addProductToCart(Number(user_id), Number(id), 1)
     }
     const removeItemFromCart = () => {
-      dispatch(removeFromCart({id}))
+      if(!authToken) {
+        dispatch(deleteCartItem({id}))
+        return
+      }
+      onRemove()
     }
   return (
     <>
@@ -31,7 +47,7 @@ function DesktopCart({ id, title, productQty, price, description, image_url }) {
             <p className="lowercase leading-4 line-clamp-4 text-xs h-[60px] ">  <p  dangerouslySetInnerHTML={{ __html: description }} 
       /> </p>
             <div className='  font-primary flex items-center space-x-1 text-xs  mt-[6px] text-gray-800 font-semibold'>
-            <TbCurrencyNaira  className="w-4 h-4 text-gray-600"/>{(price * productQty).toLocaleString()}
+            <TbCurrencyNaira  className="w-4 h-4 text-gray-600"/>{(price)?.toLocaleString()}
           </div>
                     <p className='mb-1'>Qauntity</p>
             <div className="flex justify-between items-center">
@@ -69,3 +85,5 @@ function DesktopCart({ id, title, productQty, price, description, image_url }) {
 }
 
 export default DesktopCart
+
+

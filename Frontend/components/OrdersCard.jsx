@@ -3,6 +3,7 @@ import { TbCurrencyNaira } from 'react-icons/tb'
 
 function OrdersCard({ total,orders,}) {
   const imageSlider = [1,2,3]
+  console.log(orders)
   return (
     <div className="">
     <div className="flex justify-between items-center bg-gray-300 p-2 rounded-t-sm mt-2 space-x-2">
@@ -24,9 +25,9 @@ function OrdersCard({ total,orders,}) {
 
     <div className="flex justify-between items-center overflow-x-scroll w-full bg-white p-2 scrollbar-hide">
     <div className="flex items-center space-x-2 my-1 w-full      lg:my-2 lg:w-[200px]   scrollbar-hide">
-{orders.map (({ product, qty}) => (
+{orders.map ((product) => (
 
-<div key={product.id} className="relative   w-[100px] min-w-[80px] h-[60px]  overflow-hidden rounded-md border-[3px]  cursor-pointer hover:border-blue-500 p-4">
+<div key={product.id} className="relative   w-[120px] min-w-[120px] h-[100px]  overflow-hidden rounded-md border-[3px]  cursor-pointer hover:border-blue-500 p-4">
 <Image src={product.image_url} alt={'order'} layout="fill" objectFit="cover"/>
 </div>
 ))}

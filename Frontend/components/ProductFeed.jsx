@@ -5,16 +5,16 @@ import { useSelector } from 'react-redux';
 import { productsRetrieved } from '../slices/productSlice';
 
 
-const ProductFeed = () => {
+const ProductFeed = ({authToken, user_id}) => {
   // const [products, setProducts] = useState([])
   const [totalPages, setTotalPages] = useState(1)
   const [page, setPage] = useState(0)
   // const perPage = 6
   const recievedProducts = useSelector(productsRetrieved)
   const perPages = {
-    sm: 2,
-    md: 3,
-    lg: 4
+    sm: 8,
+    md: 9,
+    lg: 15
   };
 
   const [perPage, setPerPage] = useState(perPages.sm);
@@ -61,6 +61,8 @@ const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
         description={description}
         category={category}
         image_url={image_url}
+        authToken={authToken}  
+        user_id={user_id} 
       />
     ))}
     

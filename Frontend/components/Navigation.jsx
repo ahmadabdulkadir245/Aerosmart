@@ -10,7 +10,7 @@ import router from 'next/router'
 import { useRecoilState } from 'recoil';
 import { navState } from '../atoms/navHandler';
 import { useDispatch, useSelector } from "react-redux"
-import { selectedcartItems } from '../slices/cartSlice';
+import { selectCartItems } from '../slices/cartItemsSlice';
 import { addSearchedWord } from '../slices/searchSlice';
 import MobileNav from './MobileNav';
 import SearchSuggesstions from './SearchSuggesstions';
@@ -61,7 +61,8 @@ function Navigation() {
       return router.push(`/search/${suggesstion}`)
     }
   }
-  const productInCart = useSelector(selectedcartItems)
+  // const acountInCart = useSelector(selectCartItems)
+  const productInCart = useSelector(selectCartItems)
 
   const {logout, authToken} = useContext(AuthContext)
   const logoutHandler  = () => {
@@ -143,17 +144,19 @@ function Navigation() {
 
                     
                   </nav>
-                  {authToken && 
+                  {/* {authToken && 
                 <div className='hidden lg:flex space-x-4 items-center bg-gray-50  mx-auto px-[50px] py-2 '>
                   <Link href='/admin/products'>Admin Products</Link>
                   <Link href='/admin/add-product'>Add Product</Link>
                 </div>
-                }
+                } */}
                  {/* search for mobile */}
                   <MobileNav showSearch={showSearch} searchHandler={searchHandler} searchWord={searchWord} searchIconHandler={searchIconHandler}  />
 
                   {/* Suggesstions */}
+                  <div className="z-100">
                  <SearchSuggesstions searchWord={searchWord} setSearchWord={setSearchWord} pressToSearchHandler={pressToSearchHandler} />
+                  </div>
 </div>
   )
   };

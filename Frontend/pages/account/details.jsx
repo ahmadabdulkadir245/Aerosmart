@@ -8,10 +8,26 @@ import AccountDetails from '../../components/AccountDetails';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ProductSlider from '../../components/ProductSlider';
+import Loading from '../../components/Loading';
 
 function Orders({products}) {
   const [selected, setSelected] = useState('orders')
   const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 400)
+  }, [loading])
+  
+  if (loading) {
+    return<>
+    <Header/>
+    <Loading />
+    </> 
+  }
+
   return (
         <>
         <Header/>

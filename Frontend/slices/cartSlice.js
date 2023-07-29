@@ -11,13 +11,23 @@ export const cartSlice = createSlice({
   initialState,
   reducers: {
     addToCart: (state, action) => {
-      const item = state.cartItems.find(cartItem => cartItem.product.id == action.payload.id )
-      if(item) item.qty++
-      else {
+      const productId = action.payload.id;
+      const existingCartItem = state.cartItems.find(
+        (cartItem) => cartItem.product.id === productId
+      );
+
+      if (existingCartItem) {
+        // If the product already exists in the cart, increment the quantity
+        existingCartItem.qty++;
+      } else {
+        // If the product doesn't exist in the cart, add a new entry
+        const productFromBackend = action.payload.product; // Assuming the backend returns the full product object
+        const quantityFromBackend = action.payload.qty; // Assuming the backend returns the quantity of the product
+
         state.cartItems.unshift({
-          product: action.payload,
-          qty: 1
-        })
+          product: productFromBackend,
+          qty: quantityFromBackend,
+        });
       }
     },
     removeFromCart: (state, action) => {
@@ -66,6 +76,6 @@ export const totalCartItemSelector = createSelector(cartItems =>
 
 export const selectedcartItems = (state) => state.cart.cartItems;
 export const selectedcartItemsProduct = (state) => state.cart.cartItems.product;
-export const selectTotal = (state) =>
-  state.cart.cartItems.reduce((total, cartItem) => total +=  cartItem.qty * cartItem.product.price, 0);
+
+
 export default cartSlice.reducer;

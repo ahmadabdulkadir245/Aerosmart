@@ -6,7 +6,11 @@ const Banner = require('../models/banner_image');
 const User = require('../models/user');
 const db = require('../util/database');
 const Cart = require('../models/cart');
-const CartItem = require('../models/cart_items');
+const CartItems = require('../models/cart_items');
+const Address = require('../models/addresses');
+const Wishlist = require('../models/wishlist');
+
+
 
 
 module.exports = {
@@ -58,47 +62,59 @@ module.exports = {
       isAdmin: user.isAdmin
     };
   },
-  cart:  async function({  user_id }) {
-      const carts = await CartItem.fetchUserCart(user_id)
-      const ids = carts[0].map(cart => {
-        return cart.productId.toString()
-      })
-      const id = ids[0]
-
-      // const products = await Product.findByCart(ids)
-      // .then(([rows]) => {
-      //   console.log(`This is the product gotten: ${rows}`)
-      //   return rows;
-      // });
-      const products = await Product.findByCart(ids)
-         // .then(([rows]) => {
-      //   console.log(`This is the product gotten: ${rows}`)
-      //   return rows;
-      // })
-
-      
-      return {
-        carts: carts.map(cart => {
-          return {
-            id: cart.id
-          }
-        })
-      }
+  cart: async function ({ user_id }) {
+    const carts = await CartItems.fetchUserCart(user_id);
+    return {
+      carts: carts.map(cart => ({
+        id: cart.id,
+        quantity: cart.quantity,
+        product_id: cart.product_id,
+        user_id: cart.user_id,
+      })),
+    };
   },
-  addToCart:  async function({  user_id, qty, productId }) {
-    const productExist = await CartItem.productExist(productId).then(([product]) => {
-      return product[0]
-    })
-    .catch(err => console.log(err))
+  addToCart: async function ({ cartInput }) {
+    const productExist = await CartItems.productExist(cartInput.product_id, cartInput.user_id);
 
-    if(productExist) {
-      CartItem.updateQuantity(productId, qty)
+    if (productExist.length > 0) {
+      CartItems.updateQuantity(productExist[0].id, productExist[0].quantity + cartInput.quantity);
+      return {
+        id: productExist[0].id,
+        quantity: productExist[0].quantity + cartInput.quantity,
+        product_id: cartInput.product_id,
+        user_id: cartInput.user_id,
+      };
     }
-    const cartItem = new CartItem(null, qty, productId, user_id)
-    cartItem.save()
+
+    const cartItems = new CartItems(null, cartInput.quantity, cartInput.product_id, cartInput.user_id);
+    cartItems.save();
+    return {
+      id: cartItems.id,
+      quantity: cartItems.quantity,
+      product_id: cartItems.product_id,
+      user_id: cartItems.user_id,
+    };
+  },
+  removeFromCart: async function ({ user_id, cart_item_id }) {
+    try {
+      // Check if the cart item exists
+      const cartItem = await CartItems.findById(user_id, cart_item_id);
+      if (!cartItem) {
+        throw new Error('Cart item not found');
+      }
+
+      // Remove the cart item from the database
+      await CartItems.deleteById(user_id, cart_item_id);
+      
+      // Return true to indicate successful removal
+      return true;
+    } catch (err) {
+      console.log(err);
+      return false;
+    }
   },
   login: async function({ email, password }) {
-    const user = await User.userExist(email).then(([user]) => {
+    const user = await User.userEmailExist(email).then(([user]) => {
       return user[0]
     })
     .catch(err => console.log(err))
@@ -187,7 +203,6 @@ module.exports = {
           return product[0]
         })
         .catch(err => console.log(err))
-
         // if (!product) {
         //   const error = new Error('No post found!');
         //   error.code = 404;
@@ -313,5 +328,249 @@ module.exports = {
             }),
             totalPages: totalPages
           }
-      }
-}
+      },
+      // addresses section 
+      addresses: async function({ user_id }, req) {
+        try {
+          const addresses= await Address.fetchByUserId(user_id);
+    
+          return {
+            addresses: addresses.map((address) => ({
+              id: address.id,
+              user_id: address.user_id,
+              first_name: address.first_name,
+              last_name: address.last_name,
+              address_line_1: address.address_line_1,
+              address_line_2: address.address_line_2,
+              city: address.city,
+              state: address.state,
+              phone_number_1: address.phone_number_1,
+              phone_number_2: address.phone_number_2,
+              is_default: address.is_default
+              // createdAt: address.createdAt.toISOString(),
+              // updatedAt: address.updatedAt.toISOString(),
+            })),
+          };
+        } catch (err) {
+          console.log(err);
+          // Handle the error here, you can throw an error or return an appropriate value
+          throw new Error('Error fetching addresses');
+        }
+      },
+      createAddress: async function({ addressInput }, req) {
+        const address = new Address(
+          null,
+          addressInput.user_id,
+          addressInput.first_name,
+          addressInput.last_name,
+          addressInput.address_line_1,
+          addressInput.address_line_2 || null,
+          addressInput.city,
+          addressInput.state,
+          addressInput.phone_number_1,
+          addressInput.phone_number_2 || null
+        );
+    
+        await address.save();
+    
+        return {
+          id: address.id,
+          user_id: address.user_id,
+          first_name: address.first_name,
+          last_name: address.last_name,
+          address_line_1: address.address_line_1,
+          address_line_2: address.address_line_2,
+          city: address.city,
+          state: address.state,
+          phone_number_1: address.phone_number_1,
+          phone_number_2: address.phone_number_2,
+          // createdAt: address.createdAt.toISOString(),
+          // updatedAt: address.updatedAt.toISOString(),
+        };
+      },
+    
+      updateAddress: async function({ id, addressInput }, req) {
+        const address = new Address(
+          id,
+          addressInput.user_id,
+          addressInput.first_name,
+          addressInput.last_name,
+          addressInput.address_line_1,
+          addressInput.address_line_2 || null,
+          addressInput.city,
+          addressInput.state,
+          addressInput.phone_number_1,
+          addressInput.phone_number_2 || null,
+        );
+    
+        await address.updateById(id, address.user_id);
+    
+        return {
+          id: address.id,
+          user_id: address.user_id,
+          first_name: address.first_name,
+          last_name: address.last_name,
+          address_line_1: address.address_line_1,
+          address_line_2: address.address_line_2,
+          city: address.city,
+          state: address.state,
+          phone_number_1: address.phone_number_1,
+          phone_number_2: address.phone_number_2,
+          // createdAt: address.createdAt.toISOString(),
+          // updatedAt: address.updatedAt.toISOString(),
+        };
+      },
+    
+      deleteAddress: async function({ user_id, address_id }, req) {
+        try {
+          // Check if the cart item exists
+          const address = await Address.findById(user_id, user_id);
+          if (!address) {
+            throw new Error('Address not found');
+          }
+          // Remove the cart item from the database
+          await Address.deleteById(user_id, address_id);
+          
+          // Return true to indicate successful removal
+          return true;
+        } catch (err) {
+          console.log(err);
+          return false;
+        }
+      },
+      setDefaultAddress: async function({ user_id, address_id }, req) {
+        try {
+          // Step 1: Fetch the address with the given address_id and user_id
+          const address = await Address.findById(user_id, address_id);
+          if (!address) {
+            throw new Error('Address not found');
+          }
+          
+          await Address.setDefaultAddress(user_id, address_id);
+          // const updatedAddress = await Address.findById(user_id, address_id);
+          return true
+
+        } catch (err) {
+          console.log(err);
+          // Handle the error here, you can throw an error or return an appropriate value
+          throw new Error('Error setting default address');
+        }
+      },
+
+      productsInCart: async function({ ids }, req) {
+        try {
+          const products = await Product.fetchProductsInCart(ids);
+          console.log(products)
+          return products.map((product) => ({
+            id: product.id,
+            title: product.title,
+            price: product.price,
+            image_url: product.image_url,
+            description: product.description,
+            category: product.category,
+            quantity: product.quantity,
+            // createdAt: product.createdAt.toISOString(),
+            // updatedAt: product.updatedAt.toISOString(),
+          }));
+        } catch (error) {
+          console.error('Error fetching products in cart:', error);
+          throw new Error('Error fetching products in cart');
+        }
+      },
+
+      // wishlist section
+      addToWishlist: async function ({ wishlistInput }) {
+        const productExist = await Wishlist.productExist(wishlistInput.product_id, wishlistInput.user_id);
+    
+        if (productExist.length > 0) {
+       return
+        }
+        const wishlist = new Wishlist(null, wishlistInput.product_id, wishlistInput.user_id);
+        wishlist.save();
+        return {
+          id: wishlist.id,
+          user_id: wishlist.user_id,
+          product_id: wishlist.product_id,
+        };
+      },
+      wishlists: async function ({ user_id }) {
+        console.log(user_id)
+        const wishlists = await Wishlist.fetchUserWishlist(user_id);
+        console.log(wishlists)
+        return {
+          wishlists: wishlists.map(wishlist => ({
+            id: wishlist.id,
+            product_id: wishlist.product_id,
+            user_id: wishlist.user_id,
+          })),
+        };
+      },
+      deleteWishlist: async function ({user_id, wishlist_id}) {
+          try {
+            // Check if the cart item exists
+            const wishlist = await Wishlist.findById(wishlist_id, user_id);
+            if (!wishlist) {
+              throw new Error('wishlist not found');
+            }
+      
+            // Remove the cart item from the database
+            await Wishlist.deleteById(wishlist_id, user_id);
+            
+            // Return true to indicate successful removal
+            return true;
+          } catch (err) {
+            console.log(err);
+            return false;
+          }
+        },
+
+        //  user section
+        updateUsername: async function ({ usernameInput }) {
+          // console.log(usernameInput)
+        //   const userExist = await User.userExist(usernameInput.id);
+        //   if (userExist.length < 0) {
+        //  return
+        //   }
+          const userDetails = await User.fetchUser(usernameInput.id);
+          // console.log(userDetails)
+        const user = new User(null, userDetails.email, userDetails.password, userDetails.isAdmin, usernameInput.first_name, usernameInput.last_name)
+        console.log(user)
+        await user.updateById(usernameInput.id)
+
+          return {
+            id: user.id,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password: user.password,
+            isAdmin: user.isAdmin,
+          };
+        },
+        users: async function () {
+          const users = await User.fetchUsers();
+          console.log(users)
+          return {
+            users: users.map(user => ({
+              id: user.id,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              email: user.email,
+              password: user.password,
+              isAdmin: user.isAdmin
+            })),
+          };
+        },
+        user: async function ({ id }) {
+          const user = await User.fetchUser(id);
+          return {
+              id: user.id,
+              email: user.email,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              password: user.password,
+              isAdmin: user.isAdmin
+          };
+        },
+      
+    }
+

@@ -3,14 +3,37 @@ import Checkout from '../components/Checkout'
 import Footer from '../components/Footer'
 import { useRouter } from 'next/router';
 import { useSelector } from 'react-redux';
-import { useState } from 'react';
-import { selectedOrderItems, selectOrderTotal } from '../slices/orderSlice';
+import { useEffect, useState } from 'react';
+// import { selectedOrderItems, selectOrderTotal } from '../slices/orderSlice';
 import { TbCurrencyNaira } from 'react-icons/tb';
+import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
+import { selectCartItems, selectTotal } from '../slices/cartItemsSlice';
+import Loading from '../components/Loading';
+
 
 function CheckoutPage() {
   const router = useRouter()
-  const orderItems = useSelector(selectedOrderItems);
-  const orderTotal = useSelector(selectOrderTotal)
+  const orderItems = useSelector(selectCartItems);
+  const orderTotal = useSelector(selectTotal)
+  const config = {
+    public_key: 'FLWPUBK_TEST-de97bc6fec65ed6b94df1dfb3d44ee1d-X',
+    tx_ref: Date.now(),
+    amount: orderTotal + 1000,
+    currency: 'NGN',
+    payment_options: 'card,mobilemoney,ussd',
+    customer: {
+      email: 'affandangi@gmail.com',
+       phone_number: '070********',
+      name: 'Affan Dangi',
+    },
+    customizations: {
+      title: 'Aerosmart',
+      description: 'Payment for items in cart',
+      logo: 'https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg',
+    },
+  };
+
+  const handleFlutterPayment = useFlutterwave(config);
 
   const [orderDetails, setOrderDetails] = useState({
     email: '',
@@ -22,14 +45,30 @@ function CheckoutPage() {
     postalCode: '',
     state: '',
   })
-    {  if (orderItems.length === 0) {
+
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 400)
+  }, [loading])
+  
+  if (loading) {
+    return<>
+    <Header/>
+    <Loading />
+    </> 
+  }
+
+    if (orderItems.length === 0) {
       return (
  <div>
        <Header />
 <h3 className='text-xl text-center pt-10 text-gray-600'>No Orders Made</h3>
  </div>
   )
-      }}
+      }
   return (
     <div className="">
       <Header />
@@ -100,7 +139,7 @@ function CheckoutPage() {
 
 
             {/* Pament section */}
-            <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
+            {/* <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
             <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
                 3. pamentemt
             </h2>
@@ -130,7 +169,7 @@ function CheckoutPage() {
                 // onChange={passwordInputHandler}
               />      
               </div>
-            </div>
+            </div> */}
 
             {/* complete order */}
             <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
@@ -160,8 +199,20 @@ function CheckoutPage() {
                         <p className='text-xs'>Email me about new products, deals and discounts.</p>
                   </div>
                   
-                  <button className="capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in" onClick={() => router.push(`/orders`)}>Pay Now</button>
-
+                  <button className="capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in"  
+                  onClick={() => {
+          handleFlutterPayment({
+            callback: (response) => {
+               console.log(response);
+               router.replace('/orders')
+                closePaymentModal() // this will close the modal programmatically
+            },
+            onClose: () => {},
+          });
+        }}
+        // onClick={() => router.push('/orders')}
+        >Pay Now</button>
+                
                 </div>
             </div >
             </div>

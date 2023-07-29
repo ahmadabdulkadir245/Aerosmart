@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BiHeart, BiMap, BiStore } from 'react-icons/bi';
 import { CiUser } from 'react-icons/ci';
 import { useRouter } from 'next/router';
@@ -8,10 +8,26 @@ import AccountOrders from '../../components/AccountOrders';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ProductSlider from '../../components/ProductSlider';
+import Loading from '../../components/Loading';
 
 function Orders({products}) {
   const [selected, setSelected] = useState('orders')
   const router = useRouter()
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false)
+    }, 400)
+  }, [loading])
+  
+  if (loading) {
+    return<>
+    <Header/>
+    <Loading />
+    </> 
+  }
+
   return (
         <>
         <Header/>
