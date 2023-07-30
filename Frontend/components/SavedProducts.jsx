@@ -64,7 +64,7 @@ function SavedProducts({ id, category, title, wishlist_id, price, image_url, use
     }
   };
   return (
-<div className='col-span-3 bg-white' key={wishlist_id}>
+<div className='col-span-3 bg-white' key={id}>
     <div className="py-5 lg:px-8 rounded-md">
 
 

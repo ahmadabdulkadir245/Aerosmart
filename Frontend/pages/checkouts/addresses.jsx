@@ -115,7 +115,7 @@ function CheckoutAddress({user_id}) {
         </h2>
         <div className='bg-gray-400 w-[98%] h-[1px] rounded-sm m-auto'></div>
         {addresses.map((address) => (
-            <div className="my-4 text-xs" >
+            <div className="my-4 text-xs" key={address.id}>
                 <div className="font-poppins border-2 border-gray-500 p-2 rounded-md">
                   <div className="flex items-center space-x-2 ">  <input type="radio" name="address"  value={address.id} onChange={selectAddress} />
                       <h3 className="capilatalize font-semibold">{(address.first_name).toUpperCase()} {(address.last_name).toUpperCase()}</h3> 
