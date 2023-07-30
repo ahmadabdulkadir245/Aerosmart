@@ -7,7 +7,7 @@ import { CiShoppingCart } from "react-icons/ci"
 import { useDispatch } from "react-redux"
 import axios from "axios"
 
-function SavedProducts({ id, category, title, wishlist_id, price, image_url, user_id, setLoading }) {
+function SavedProducts({ id, key, category, title, wishlist_id, price, image_url, user_id, setLoading }) {
   const dispatch = useDispatch()
   const addToCart = (e) => {
     e.preventDefault()
@@ -64,7 +64,7 @@ function SavedProducts({ id, category, title, wishlist_id, price, image_url, use
     }
   };
   return (
-<div className='col-span-3 bg-white' key={id}>
+<div className='col-span-3 bg-white' key={key}>
     <div className="py-5 lg:px-8 rounded-md">
 
 

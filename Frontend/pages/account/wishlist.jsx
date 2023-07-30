@@ -104,6 +104,7 @@ if(loading) {
             {matchingProducts.map(({id, title, category, price, description, image_url, wishlist_id}) => (
             <SavedProducts 
             id={id}
+            key={id}
             wishlist_id={wishlist_id}
             title={title}
             category={category}
