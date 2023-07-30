@@ -5,8 +5,9 @@ import { AiOutlineDelete } from "react-icons/ai"
 import { TiTimes, TiTimesOutline } from "react-icons/ti"
 import { CiShoppingCart } from "react-icons/ci"
 import { useDispatch } from "react-redux"
+import axios from "axios"
 
-function SavedProducts({ id, key, category, title, description, price, image_url, user_id }) {
+function SavedProducts({ id, category, title, wishlist_id, price, image_url, user_id, setLoading }) {
   const dispatch = useDispatch()
   const addToCart = (e) => {
     e.preventDefault()
@@ -39,9 +40,31 @@ function SavedProducts({ id, key, category, title, description, price, image_url
       // console.log(res.json())
       return res.json();
     })
+
+    
+  }
+  const deleteWishlist = async () => {
+    try {
+      await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
+        query: `
+          mutation DeleteWishlist($user_id: Int, $wishlist_id: Int) {
+            deleteWishlist(user_id: $user_id, wishlist_id: $wishlist_id)
+          }
+        `,
+        variables: {
+          user_id: Number(user_id),
+          wishlist_id: Number(wishlist_id),
+        },
+      });
+
+      // Update the defaultAddress state
+      setLoading(true);
+    } catch (error) {
+      console.error("Error setting default address:", error);
     }
+  };
   return (
-<div className='col-span-3 bg-white' key={key}>
+<div className='col-span-3 bg-white' key={wishlist_id}>
     <div className="py-5 lg:px-8 rounded-md">
 
 
@@ -62,7 +85,8 @@ function SavedProducts({ id, key, category, title, description, price, image_url
                 <div className="capitalize p-2 rounded-md w-1/2   bg-yellow-500 text-white cursor-pointer space-x-3 hover:bg-yellow-500 hover:border-white hover:text-white transition-all delay-100 ease-in"   onClick={addToCart}>
                         <CiShoppingCart className="w-6 h-6 mx-auto"/>
                       </div>
-                <div className="capitalize p-2 rounded-md w-1/2   bg-red-500 text-white cursor-pointer space-x-3 hover:bg-yellow-500 hover:border-white hover:text-white transition-all delay-100 ease-in">
+                <div className="capitalize p-2 rounded-md w-1/2   bg-red-500 text-white cursor-pointer space-x-3 lg:hover:bg-yellow-500 hover:border-white hover:text-white transition-all delay-100 ease-in" 
+                onClick={deleteWishlist} >
                         <TiTimesOutline className="w-6 h-6 mx-auto"/>
                       </div>
   </div>
@@ -73,7 +97,7 @@ function SavedProducts({ id, key, category, title, description, price, image_url
                 add to cart
               </button>
               <button className="mt-2 w-full bg-red-500 text-white  p-3 rounded-md capitalize hover:bg-red-400 transition-all delay-100 tracking-wide "
-                 onClick={() => router.push('/login')}>
+                 onClick={deleteWishlist}>
                 delete
               </button>
                 </div>

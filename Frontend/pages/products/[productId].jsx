@@ -243,11 +243,11 @@ function Product({product, products, user_id}) {
 
       </div>
       
-      <div className="lg:max-w-7xl mx-auto bg-white p-8 my-5 ">
+      <div className="lg:max-w-7xl mx-auto bg-white px-3 py-8 lg:p-8 my-5 ">
         <h2 className="text-center uppercase text-xl font-poppins font-semibold">description</h2>
         <hr className="bg-gray-400 my-2" />
 
-        <p className="prose prose-h1:text-3xl   prose-h1:font-semibold prose-h2:text-2xl  prose-h2:font-semibold prose-h2:mt-[0px] 
+        <p className="prose prose-h1:text-3xl   prose-h1:font-semibold prose-h2:text-2xl  prose-h2:font-semibold prose-h2:mt-[0px]
       prose-h2:mb-[24px] prose-p:text-xs prose-headings:capitalize prose-a:text-blue-500 hover:prose-a:text-blue-800 font-poppins" dangerouslySetInnerHTML={{ __html: product.description }} 
       />
       </div>

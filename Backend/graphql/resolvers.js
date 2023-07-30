@@ -420,11 +420,10 @@ module.exports = {
           // updatedAt: address.updatedAt.toISOString(),
         };
       },
-    
       deleteAddress: async function({ user_id, address_id }, req) {
         try {
           // Check if the cart item exists
-          const address = await Address.findById(user_id, user_id);
+          const address = await Address.findById(user_id, address_id);
           if (!address) {
             throw new Error('Address not found');
           }
@@ -494,9 +493,7 @@ module.exports = {
         };
       },
       wishlists: async function ({ user_id }) {
-        console.log(user_id)
         const wishlists = await Wishlist.fetchUserWishlist(user_id);
-        console.log(wishlists)
         return {
           wishlists: wishlists.map(wishlist => ({
             id: wishlist.id,
@@ -505,25 +502,23 @@ module.exports = {
           })),
         };
       },
-      deleteWishlist: async function ({user_id, wishlist_id}) {
-          try {
-            // Check if the cart item exists
-            const wishlist = await Wishlist.findById(wishlist_id, user_id);
-            if (!wishlist) {
-              throw new Error('wishlist not found');
-            }
-      
-            // Remove the cart item from the database
-            await Wishlist.deleteById(wishlist_id, user_id);
-            
-            // Return true to indicate successful removal
-            return true;
-          } catch (err) {
-            console.log(err);
-            return false;
+      deleteWishlist: async function({ user_id, wishlist_id }, req) {
+        try {
+          // Check if the cart item exists
+          const wishlist = await Wishlist.findById(user_id, wishlist_id);
+          if (!wishlist) {
+            throw new Error('Wishlist not found');
           }
-        },
-
+          // Remove the cart item from the database
+          await Wishlist.deleteById(user_id, wishlist_id);
+          
+          // Return true to indicate successful removal
+          return true;
+        } catch (err) {
+          console.log(err);
+          return false;
+        }
+      },
         //  user section
         updateUsername: async function ({ usernameInput }) {
           // console.log(usernameInput)

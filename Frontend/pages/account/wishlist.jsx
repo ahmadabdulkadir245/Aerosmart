@@ -12,7 +12,7 @@ import { getUserIDFromCookie } from '../../utils/cookie';
 import { waitForAllSettled } from 'recoil';
 import Loading from '../../components/Loading';
 
-function Orders({products, user_id}) {
+function Wishlist({products, user_id}) {
   const [selected, setSelected] = useState('account')
   const router = useRouter()
   const [wishlists, setWishlists] = useState([])
@@ -77,10 +77,8 @@ function Orders({products, user_id}) {
   }
   
   const matchingProducts = getMatchingProducts(wishlists, products) || []
-
-console.log(matchingProducts);
   
-
+  console.log(matchingProducts)
 if(loading) {
   return (
     <>
@@ -101,21 +99,24 @@ if(loading) {
             <hr className={`${placeOrders ? 'bg-yellow-400 ' : 'bg-transparen'}w-full h-1 -mb-3 transition-all delay-100 ease-in` } /> 
             </div>
            
-
         </div>
             <hr className="bg-gray-300 w-full h-[1px]" />
             {matchingProducts.map(({id, title, category, price, description, image_url, wishlist_id}) => (
             <SavedProducts 
             id={id}
-            key={wishlist_id}
+            wishlist_id={wishlist_id}
             title={title}
             category={category}
             description={description}
             price={price}
             image_url={image_url}
             user_id={user_id}
+            setLoading={setLoading}
              />
             ))}
+            {matchingProducts.length < 1 && 
+            <p className='uppercase text-red-500  my-5 text-center'>no products saved</p>
+            }
         </div>
         <div className="max-w-7xl mx-auto">
       <ProductSlider sectionTitle={'recently viewed'} products={products.slice(3,12)} path={'/'}/>
@@ -126,12 +127,12 @@ if(loading) {
   )
 }
 
-export default Orders
+export default Wishlist
 
 
 export const getServerSideProps = async (context) => {
   const page = 1;
-  const perPage = 15;
+  const perPage = 30;
   const user_id = getUserIDFromCookie(context.req);
 
 

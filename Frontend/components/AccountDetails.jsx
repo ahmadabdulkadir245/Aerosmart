@@ -199,7 +199,7 @@ const saveNewName = async (event) => {
                   <BiPencil className="w-5 h-5 cursor-pointer hover:text-white transition-all delay-100 ease-in" onClick={() => router.push('/account/address')}/>
                 </div>
 
-              {addresses[0] ?
+              {addresses[1] ?
 
                 <div className="border-2 rounded-md border-gray-300 p-2 mt-4 text-xs space-y-2">
                   <div className="capitalize flex space-x-1  items-center"><BiUser /> <p>{addresses[1]?.first_name.toUpperCase() + ' ' + addresses[1]?.last_name.toUpperCase()   }</p></div>

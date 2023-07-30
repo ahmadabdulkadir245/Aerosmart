@@ -15,6 +15,21 @@ function CheckoutPage() {
   const router = useRouter()
   const orderItems = useSelector(selectCartItems);
   const orderTotal = useSelector(selectTotal)
+  const doorDeliverFee = 7000
+  const standardDeliverFee = 1000
+  const [deliverFee, setDeliveryFee] = useState(standardDeliverFee)
+  const [deliveryType, setDeliveryType] = useState('standard');
+  const handleDeliveryTypeChange = (event) => {
+    const selectedType = event.target.value;
+    let fee = standardDeliverFee; // Default delivery fee for 'standard'
+    // Check the selected delivery type and set the appropriate fee
+    if (selectedType === 'express') {
+      fee = doorDeliverFee;
+    }
+
+    setDeliveryFee(fee);
+    setDeliveryType(selectedType);
+  };
   const config = {
     public_key: 'FLWPUBK_TEST-de97bc6fec65ed6b94df1dfb3d44ee1d-X',
     tx_ref: Date.now(),
@@ -106,17 +121,20 @@ function CheckoutPage() {
         <div className="bg-white w-full text-xs px-2 py-4 space-y-3">
           <div className="">
           <div className="flex space-x-3 mb-1">
-            <input type="radio" name="delivery" className='cursor-pointer' />
+            <input type="radio" name="delivery" value="express"
+          className='cursor-pointer' onChange={handleDeliveryTypeChange} />
             <p>Door deliver</p>
           </div>
-          <p className='pl-6'>(1 - 2) days delivery Gauranteed</p>
+          <p className='pl-6 flex '>(1 - 2) days delivery Gauranteed  <span className="text-black flex items-center  ">  <TbCurrencyNaira  className="w-3 h-4 ml-2"/><span className='font-changa'> {doorDeliverFee.toLocaleString()}</span></span></p>
           </div>
             <div className="">
           <div className="flex space-x-3 mb-1">
-            <input type="radio" name="delivery" className='cursor-pointer' />
+            <input name="delivery" type="radio" value="standard"
+          checked={deliveryType === 'standard'}
+           className='cursor-pointer' onChange={handleDeliveryTypeChange}  />
             <p>standard delivery</p>
           </div>
-          <p className='pl-6'>(3 - 7) Business days estimated</p>
+          <p className='pl-6 flex'>(3 - 7) Business days estimated <span className="text-black flex items-center  ">  <TbCurrencyNaira  className="w-3 h-4 ml-2"/><span className='font-changa'>{standardDeliverFee.toLocaleString()}</span></span></p>
           </div>
         </div>
       </div>
@@ -138,39 +156,7 @@ function CheckoutPage() {
       </div>
 
 
-            {/* Pament section */}
-            {/* <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
-            <h2 className='uppercase text-gray-700 pb-2 px-3 py-4'>
-                3. pamentemt
-            </h2>
-            
-
-            <div className='px-3'>
-            <input
-                type='number'
-                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-full  m-auto flex my-5 lg:my-5'
-                placeholder='0000 0000 0000 0000'
-                required
-                // onChange={passwordInputHandler}
-              />
- <div className="flex justify-between my-5">
- <input
-                type='number'
-                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-[50%]  flex  lg:my-2'
-                placeholder='MM/YY'
-                required
-                // onChange={passwordInputHandler}
-              />
-   <input
-                type='text'
-                className='border-[1px] lg:border-[1px] rounded-lg   border-gray-500 outline-none px-4 py-[16px] w-[40%]  flex  lg:my-2'
-                placeholder='CVV '
-                required
-                // onChange={passwordInputHandler}
-              />      
-              </div>
-            </div> */}
-
+         
             {/* complete order */}
             <div className='bg-gray-600 w-[98%] h-2 rounded-sm m-auto'></div>
 
@@ -182,7 +168,7 @@ function CheckoutPage() {
               </div>
               <div className='flex justify-between px-2 '>
                 <p className='py-1'>Delivery Fee:</p>
-                <p className='py-1 flex items-center'><TbCurrencyNaira  className="w-5 h-5 "/>{(1000).toLocaleString()}</p>
+                <p className='py-1 flex items-center'><TbCurrencyNaira  className="w-5 h-5 "/>{deliverFee.toLocaleString()}</p>
               </div>
                 <div className='flex justify-between bg-gray-400 p-2 text-black'>
                       <p className='uppercase '>
@@ -190,7 +176,7 @@ function CheckoutPage() {
                       </p>
                         <p className=' flex items-center'>
                         <TbCurrencyNaira  className="w-5 h-5 "/>
-                          {(orderTotal + 1000).toLocaleString()}
+                          {(orderTotal + deliverFee).toLocaleString()}
                         </p>
                 </div>
                 <div className='my-4 px-2'>

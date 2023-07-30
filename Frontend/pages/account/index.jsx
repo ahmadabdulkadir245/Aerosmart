@@ -27,7 +27,7 @@ function Account({products, user_id}) {
   }, [loading])
 
   useEffect(() => {
-    const fetchAddresses = async () => {
+    const fetchUsers = async () => {
       try {
 
         const graphqlQuery = {
@@ -63,7 +63,7 @@ function Account({products, user_id}) {
         // setLoading(false);
       }
     };
-    fetchAddresses();
+    fetchUsers();
   }, [user_id]);
   console.log(user)
 
@@ -83,7 +83,7 @@ function Account({products, user_id}) {
               <div className="rounded-full p-2 bg-gray-200">
                     <CiUser className='text-gray-600 h-10 w-10'/>
               </div>
-                    <p className=" font-poppins">{user !== null ? user?.first_name + ' ' + user?.last_name : 'user name'}</p>
+                    <p className=" font-poppins">{user?.first_name ?  user?.first_name + ' ' + user?.last_name : 'user name'}</p>
             </div>
             <div className=" p-4 flex items-center justify-between capitalize">
                    <div className="hover:text-gray-400 text-gray-600" onClick={() => router.push('/account/orders')}>

@@ -37,10 +37,7 @@ class Address {
     const [rows, fieldData] = await db.execute(
       'SELECT * FROM addresses WHERE user_id = ?',
       [user_id]
-    );
-  
-    console.log('rows:', rows);
-  
+    );  
     return rows;
   }
   
