@@ -5,22 +5,65 @@ import { getUserIDFromCookie } from "../utils/cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
 
-function AccountDetails({user_id, user, setLoading}) {
+function AccountDetails({user_id, setLoading}) {
   const router = useRouter()
   const [addresses, setAddresses] = useState([]);
-  const [userData, setUserData] = useState({
-    first_name: user?.first_name || "enter first name",
-    last_name: user?.last_name || "enter last name",
-    email: user?.email || "useremail@example.com",
-  });
   const [message, setMessage] = useState({
     success: null,
     failed: null,
   })
+  
+  // user
+  const [user, setUser] = useState({
+    first_name: '',
+    last_name: '',
+    email: ''
+  })
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const graphqlQuery = {
+          query: `
+            query User($id: Int!) {
+              user(id: $id) {
+                id
+                 email
+                 first_name
+                 last_name
+               }
+            }
+          `,
+          variables: {
+            id: Number(user_id)
+          },
+        };
+
+        const response = await axios.post(
+          process.env.NEXT_PUBLIC_GRAPHQL_URL,
+          graphqlQuery
+        );
+        const result = await response.data;
+        setUser(result.data.user || null);
+      } catch (error) {
+        console.error('Error fetching addresses:', error);
+        // setLoading(false);
+        setUser(null)
+      }
+    };
+    fetchUsers();
+  }, [user_id]);
+  const [userData, setUserData] = useState({
+    first_name: user?.first_name,
+    last_name: user?.last_name,
+    email: user?.email,
+  });
+
+
+
   const [inputDisabled, setInputDisabled] = useState(true)
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setUserData((prevState) => ({ ...prevState, [name]: value }));
+    setUser((prevState) => ({ ...prevState, [name]: value }));
   };
   const editName = (event) => {
   event.preventDefault();
@@ -42,8 +85,8 @@ const saveNewName = async (event) => {
         `,
         variables: {
           id: Number(user_id),
-          first_name: userData.first_name,
-          last_name: userData.last_name
+          first_name: user.first_name,
+          last_name: user.last_name
         },
       };
       
@@ -63,8 +106,7 @@ const saveNewName = async (event) => {
           setMessage({success:null, failed:null});
         }, 2000)
         // setLoading(true)
-    console.log(userData)
-    // setDefaultAddress(result.)
+
     // setLoading(false);
   } catch (error) {
     setMessage({
@@ -139,20 +181,21 @@ const saveNewName = async (event) => {
         <input
               type='text'
               className={`border-[1px] lg:border-[1px] rounded-lg    bg-gray-200 outline-none px-4 py-[12px] w-full  m-auto flex my-3 lg:my-3 uppercase ${inputDisabled ? 'border-gray-300 cursor-not-allowed' : 'bg-gray-50'}`}
-              placeholder={addresses === [] ? addresses[0]?.first_name.toUpperCase() : 'enter first name'}
               required
               disabled={inputDisabled} 
-              value={userData?.first_name}
+              value={user?.first_name}
               onChange={handleChange}
               name="first_name"
+              placeholder="enter first name"
             />
         <input
               type='text'
               className={`border-[1px] lg:border-[1px] rounded-lg    bg-gray-200 outline-none px-4 py-[12px] w-full  m-auto flex my-3 lg:my-3 uppercase ${inputDisabled ? 'border-gray-300 cursor-not-allowed' : 'bg-gray-50'}`}
-              placeholder={addresses === [] ? addresses[0]?.last_name.toUpperCase() : 'enter last name'}
+              placeholder="enter last name"
+
               required
               disabled={inputDisabled}
-              value={userData?.last_name}
+              value={user?.last_name}
               onChange={handleChange}
               name="last_name"
             />
@@ -161,7 +204,7 @@ const saveNewName = async (event) => {
               className='border-[1px] lg:border-[1px] rounded-lg   border-gray-300 bg-gray-200 cursor-not-allowed outline-none px-4 py-[12px] w-full  m-auto flex my-3 lg:my-3'
               placeholder={'useremail@gmail.com'}
               disabled
-              value={userData?.email}
+              value={user?.email}
               required
               // onChange={passwordInputHandler}
             />

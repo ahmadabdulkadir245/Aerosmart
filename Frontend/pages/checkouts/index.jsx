@@ -33,7 +33,6 @@ function CheckoutPage({user_id}) {
     setDeliveryType(selectedType);
   };
   useEffect(() => {
-    console.log(`this is the address_id ${address_id}`)
     if (address_id) {
       const chosenAddress = addresses.filter((address) => address.id == address_id)
       setSelectedAddress(chosenAddress);
@@ -42,8 +41,6 @@ function CheckoutPage({user_id}) {
     }
   }, [address_id, addresses])
 
-  // console.log(addresses)
-  console.log(selectedAddress)
   const [user, setUser] = useState(null)
   useEffect(() => {
     const fetchUsers = async () => {

@@ -17,7 +17,6 @@ function Wishlist({products, user_id}) {
   const router = useRouter()
   const [wishlists, setWishlists] = useState([])
   const [loading, setLoading] = useState(true)
-  const [placeOrders, setPageOrder] = useState(true)
 
   useEffect(() =>{
     setTimeout(() =>setLoading(false),400)
@@ -93,28 +92,13 @@ if(loading) {
 
         <div className=" px-3 py-4 text-gray-500 lg:py-0 lg:my-10 lg:grid grid-cols-4 gap-8 max-w-7xl mx-auto">
             <AccountOptionsCard  selected={'wishlist'} setSelected={setSelected} />
-            <div className="flex space-x-6 items-center mb-2">
-            <div className=" cursor-pointer  transition-all delay-100 ease-in" onClick={() => setPageOrder(true)}>
-            <h2 className={`uppercase mb-2 ${placeOrders ? 'text-yellow-400' : 'text-gray-500'} hover:text-yellow-400 `}>all products ({matchingProducts.length})</h2>
-            <hr className={`${placeOrders ? 'bg-yellow-400 ' : 'bg-transparen'}w-full h-1 -mb-3 transition-all delay-100 ease-in` } /> 
-            </div>
-           
-        </div>
-            <hr className="bg-gray-300 w-full h-[1px]" />
-            {matchingProducts.map(({id, title, category, price, description, image_url, wishlist_id}) => (
+
+
             <SavedProducts 
-            id={id}
-            key={id}
-            wishlist_id={wishlist_id}
-            title={title}
-            category={category}
-            description={description}
-            price={price}
-            image_url={image_url}
             user_id={user_id}
             setLoading={setLoading}
+            products={matchingProducts}
              />
-            ))}
             {matchingProducts.length < 1 && 
             <p className='uppercase text-red-500  my-5 text-center'>no products saved</p>
             }

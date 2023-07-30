@@ -65,7 +65,6 @@ function Account({products, user_id}) {
     };
     fetchUsers();
   }, [user_id]);
-  console.log(user)
 
   
   if (loading) {
