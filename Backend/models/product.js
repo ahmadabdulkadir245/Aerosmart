@@ -58,6 +58,35 @@ module.exports = class Product {
     );
   }
 
+  static async fetchProductsByIds(ids) {
+    if (!ids || !ids.length) {
+      return [];
+    }
+  
+    const placeholders = ids.map(() => '?').join(',');
+    const query = `
+      SELECT id, title, price, image_url, category, quantity, description
+      FROM products
+      WHERE id IN (${placeholders})
+    `;
+  
+    try {
+      const [rows] = await db.execute(query, ids); // Pass the ids directly
+      return rows.map(row => ({
+        id: row.id,
+        title: row.title,
+        price: row.price,
+        image_url: row.image_url,
+        category: row.category,
+        quantity: row.quantity,
+        description: row.description,
+      }));
+    } catch (error) {
+      throw error;
+    }
+  }
+  
+
   static totalSearchProduct(searchWord) {
     return db.execute(
       `SELECT * FROM products WHERE products.category REGEXP '${searchWord}'

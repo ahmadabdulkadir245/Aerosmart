@@ -15,6 +15,10 @@ module.exports = buildSchema(`
         description: String!
         category: String!
         quantity: Int!
+        cart_id: Int
+        cart_quantity: Int
+        wishlist_id: Int
+        likes: Int
         createdAt: String!
         updatedAt: String!
     }
@@ -47,6 +51,16 @@ module.exports = buildSchema(`
         quantity: Int
         product_id: Int
         user_id: Int
+    }
+
+    type CartWithProducts {
+        cart: Cart
+        products: [Product]
+    }
+
+    type WishlistProducts {
+        wishlist: Wishlist
+        products: [Product]
     }
 
     type Wishlist {
@@ -165,7 +179,9 @@ module.exports = buildSchema(`
         search(word: String!, page: Int, perPage: Int): SearchedProductsData!
         users: UserData
         user(id: Int): User
-        cart(user_id: Int): CartData!
+        carts(user_id: Int): CartData!
+        getCartInProducts(user_id: Int!): CartWithProducts
+        getWishlistProducts(user_id: Int!): WishlistProducts
         wishlists(user_id: Int): WishlistData!
         productsInCart(ids: [Int]): [Product]
         banners: BannerData!
@@ -179,8 +195,8 @@ module.exports = buildSchema(`
         createProduct(productInput: ProductInputData): Product!
         addToCart(cartInput: CartInputData): Cart
         addToWishlist(wishlistInput: WishlistInputData): Wishlist
-        deleteWishlist(user_id: Int, wishlist_id: Int): Boolean
-        removeFromCart(user_id: Int, cart_item_id: Int): Boolean
+        deleteWishlist(user_id: Int, product_id: Int): Boolean
+        removeFromCart(user_id: Int, product_id: Int): Boolean
         updateProduct(id: Int!, productInput: ProductInputData): Product!
         deleteProduct(id: Int): Boolean
         updateStatus(status: String!): User!

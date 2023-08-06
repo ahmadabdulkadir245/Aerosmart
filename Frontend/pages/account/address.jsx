@@ -8,12 +8,19 @@ import Footer from '../../components/Footer';
 import ProductSlider from '../../components/ProductSlider';
 import { getAuthTokenFromCookie, getUserIDFromCookie } from '../../utils/cookie';
 import Loading from '../../components/Loading';
+import { fetchProducts } from '../../slices/productsAction';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedProducts } from '../../slices/productsSlice';
 
-function Orders({products, user_id, authToken}) {
-  const [selected, setSelected] = useState('address')
+function Orders({user_id, authToken}) {
   const router = useRouter()
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
-
+  const products = useSelector(selectedProducts);
+  const [selected, setSelected] = useState('address')
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
@@ -49,48 +56,12 @@ export default Orders
 
 
 export const getServerSideProps = async (context) => {
-  const page = 1;
-  const perPage = 15;
   const user_id = getUserIDFromCookie(context.req);
   const authToken = getAuthTokenFromCookie(context.req);
-
-  try {
-    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      query: `
-        {
-          products(page: ${page}, perPage: ${perPage}) {
-            products {
-              id
-              title
-              price
-              image_url
-              category
-              quantity
-              description
-            }
-          }
-        }
-      `,
-    });
-
-    const products = response.data?.data?.products?.products || [];
-
     return {
       props: {
-        products,
+        authToken,
         user_id,
-        authToken
       },
     };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        products: [],
-        user_id: null,
-        authToken: null
-      },
-    };
-  }
 };
-

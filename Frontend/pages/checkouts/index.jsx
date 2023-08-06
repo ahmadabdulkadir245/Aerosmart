@@ -266,7 +266,7 @@ function CheckoutPage({user_id}) {
                         <p className='text-xs'>Email me about new products, deals and discounts.</p>
                   </div>
                   
-                  <button className="capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in"  
+                  <button className={`capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in ${selectedAddress == null  ? 'opacity-50 hover:cursor-not-allowed' : 'popacity-0'}`}  
                   onClick={() => {
           handleFlutterPayment({
             callback: (response) => {

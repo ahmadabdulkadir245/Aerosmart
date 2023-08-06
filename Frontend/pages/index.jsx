@@ -5,39 +5,35 @@ import SectionSlider from '../components/SectionSlider'
 import ProductSlider from '../components/ProductSlider'
 import ProductFeed from '../components/ProductFeed'
 import { useRouter } from 'next/router'
-import { useEffect, useState, useContext } from 'react'
+import { useEffect, useState } from 'react'
 import GridSectionSlider from '../components/GridSectionSlider'
-import {AuthContext} from '../context/authContext'
 import DesktopBanner from '../components/DesktopBanner'
 import DesktopCategpry from '../components/DesktopCategpry'
 import FeaturedProducts from '../components/FeaturedProducts'
 import LatestProducts from '../components/LatestProducts'
 import About from '../components/About'
 import HomeLoading from '../components/Loadings/HomeLoading'
-import { useDispatch } from 'react-redux'
-import { getProducts } from '../slices/productSlice'
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux'
 import { getAuthTokenFromCookie, getUserIDFromCookie } from '../utils/cookie'
+import { fetchProducts } from '../slices/productsAction'
+import { selectedProducts } from '../slices/productsSlice'
 
 
 
-export default function Home({products, authToken, user_id}) {
-  const router = useRouter()
+export default function Home({authToken, user_id}) {
   const dispatch = useDispatch()  
   const [loading, setLoading] = useState(true)
-
-    useEffect(() => {
-    // let token = sessionStorage.getItem("Token");
-    // if (!token) {
-    //   router.push("/login");
-    // }
-    // setLoading(true);
-    dispatch(getProducts(products));
+  const products = useSelector(selectedProducts);
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+  
+  useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 300)
+  },[loading]);
 
-  },[loading, dispatch, products] );
   
   return (
     <div>
@@ -81,45 +77,12 @@ export default function Home({products, authToken, user_id}) {
 
 
 export const getServerSideProps = async (context) => {
-  const page = 1;
-  const perPage = 100;
   const user_id = getUserIDFromCookie(context.req);
   const authToken = getAuthTokenFromCookie(context.req);
-
-  try {
-    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      query: `
-        {
-          products(page: ${page}, perPage: ${perPage}) {
-            products {
-              id
-              title
-              price
-              image_url
-              category
-              quantity
-              description
-            }
-          }
-        }
-      `,
-    });
-
-    const products = response.data?.data?.products?.products || [];
-
     return {
       props: {
         authToken,
         user_id,
-        products
       },
     };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        products: [],
-      },
-    };
-  }
 };

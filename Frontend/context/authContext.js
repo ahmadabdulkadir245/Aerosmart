@@ -13,8 +13,6 @@ export const AuthContextProvider = ({ children }) => {
   const [authToken, setAuthToken] = useState(null);
 
   const setCookie = (name, value, hours) => {
-    console.log(`Setting cookie: ${name}=${value}`);
-
     const date = new Date();
     date.setTime(date.getTime() + hours * 60 * 60 * 1000);
     const expires = "expires=" + date.toUTCString();
@@ -38,12 +36,19 @@ export const AuthContextProvider = ({ children }) => {
         },
       };
       const res = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, graphqlQuery);
-      router.back()
       setLoading(false);
       setInputs({
         email: '',
         password: '',
       });
+      const previousRoute = router.query.from;
+      if (previousRoute === 'signup') {
+        // Redirect the user to the home page using router.replace()
+        router.replace('/home');
+      } else {
+        // Go back to the previous page
+        router.back();
+      }
 
       const { token, user_id } = res.data.data.login;
       setUser_id(user_id);
@@ -53,13 +58,6 @@ export const AuthContextProvider = ({ children }) => {
          // Save user_id and authToken as cookies with an expiration time of 5 hours
          Cookies.set('user_id', user_id, { expires: 5, path: '/', sameSite: 'strict' });
          Cookies.set('authToken', token, { expires: 5, path: '/', sameSite: 'strict' });
-      // setCookie('user_id', user_id, 5);
-      // setCookie('authToken', token, 5);
-        //       localStorage.setItem('token',token);
-        // localStorage.setItem('user_id', user_id);
-      // console.log('user_id:', user_id);
-      // console.log('authToken:', token);
-      // console.log('All Cookies:', document.cookie);
     } catch (err) {
       setLoading(false);
       setError(err.response.data.errors[0].message);

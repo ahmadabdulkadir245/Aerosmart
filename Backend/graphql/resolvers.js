@@ -31,51 +31,62 @@ module.exports = {
     //   throw error;
     // }
 
-    const userExist = await User.userExist(userInput.email).then(([user]) => {
-      return user[0]
-    })
-    .catch(err => console.log(err))
+    
+const userExist = await User.userEmailExist(userInput.email)
 
-    if(userExist) {
-      // const error = new Error('user has been created with this email');
-      // error.code = 401;
-      // throw error;
+if (userExist) {
+  return {
+    id: '',
+    email: false,
+    password: '',
+    isAdmin: '',
+  };
+}
 
-      return  {
-        id: '',
-        email: false,
-        password: '',
-        isAdmin: '',
-      }
+const hashedPw = await bcrypt.hash(userInput.password, 12);
+const user = new User(null, userInput.email, hashedPw, '');
+
+await user.save();
+
+return {
+  id: user.id,
+  email: user.email,
+  password: user.password,
+  isAdmin: user.isAdmin
+};
+  },
+  getCartInProducts: async function({ user_id }, req) {
+    try {
+        // Fetch cart items for the user
+        const carts = await CartItems.fetchUserCart(user_id);
+        // Extract product IDs from cart items
+        const productIds = carts.map(cart => cart.product_id);
+        // Fetch products based on product IDs
+        const products = await Product.fetchProductsByIds(productIds);
+        // Map each product with its corresponding cart ID and quantity
+        const productsWithCartInfo = products.map(product => {
+            const cartInfo = carts.find(cart => cart.product_id === product.id);
+            if (cartInfo) {
+                return {
+                    ...product,
+                    cart_id: cartInfo.id,
+                    cart_quantity: cartInfo.quantity,
+                };
+            }
+            return product;
+        });
+        // Return combined cart and product details
+        return {
+            cart: carts[0], // Assuming each user has only one cart
+            products: productsWithCartInfo,
+        };
+    } catch (error) {
+        throw error;
     }
-  
-    const hashedPw = await bcrypt.hash(userInput.password, 12);
-    const user = new User(null, userInput.email,
-     hashedPw, '');
+},
 
-    await user.save();
-
-    return {
-      id: user.id,
-      email: user.email,
-      password: user.password,
-      isAdmin: user.isAdmin
-    };
-  },
-  cart: async function ({ user_id }) {
-    const carts = await CartItems.fetchUserCart(user_id);
-    return {
-      carts: carts.map(cart => ({
-        id: cart.id,
-        quantity: cart.quantity,
-        product_id: cart.product_id,
-        user_id: cart.user_id,
-      })),
-    };
-  },
   addToCart: async function ({ cartInput }) {
     const productExist = await CartItems.productExist(cartInput.product_id, cartInput.user_id);
-
     if (productExist.length > 0) {
       CartItems.updateQuantity(productExist[0].id, productExist[0].quantity + cartInput.quantity);
       return {
@@ -95,16 +106,15 @@ module.exports = {
       user_id: cartItems.user_id,
     };
   },
-  removeFromCart: async function ({ user_id, cart_item_id }) {
+  removeFromCart: async function ({ user_id, product_id }) {
     try {
       // Check if the cart item exists
-      const cartItem = await CartItems.findById(user_id, cart_item_id);
+      const cartItem = await CartItems.findById(user_id, product_id);
       if (!cartItem) {
         throw new Error('Cart item not found');
       }
-
       // Remove the cart item from the database
-      await CartItems.deleteById(user_id, cart_item_id);
+      await CartItems.deleteById(user_id, product_id);
       
       // Return true to indicate successful removal
       return true;
@@ -114,31 +124,31 @@ module.exports = {
     }
   },
   login: async function({ email, password }) {
-    const user = await User.userEmailExist(email).then(([user]) => {
-      return user[0]
-    })
-    .catch(err => console.log(err))
-    if (!user) {
-      const error = new Error('Email has  not been register.');
+    const userExists = await User.userEmailExist(email);
+
+    if (!userExists) {
+      const error = new Error('Email has not been registered.');
       error.code = 401;
       throw error;
     }
-    const isEqual = await bcrypt.compare(password, user.password);
+    
+    const isEqual = await bcrypt.compare(password, userExists.password);
     if (!isEqual) {
       const error = new Error('Email or Password is incorrect.');
       error.code = 401;
       throw error;
     }
+    
     const token = jwt.sign(
       {
-        user_id: user.id,
-        email: user.email
+        user_id: userExists.id,
+        email: userExists.email
       },
       'somesupersecretsecret',
       { expiresIn: '1h' }
     );
-   
-    return { token: token, user_id: user.id };
+    
+    return { token: token, user_id: userExists.id };
   },
 
     createProduct: async function({ productInput }, req) {
@@ -190,6 +200,7 @@ module.exports = {
                 quantity: product.quantity,
                 image_url: product.image_url,
                 description: product.description,
+                likes: product.likes,
                 // createdAt: product.createdAt.toISOString(),
                 // updatedAt: product.updatedAt.toISOString()
             };
@@ -216,6 +227,7 @@ module.exports = {
           quantity: product.quantity,
           image_url: product.image_url,
           description: product.description,
+          likes: product.likes,
           // createdAt: product.createdAt.toISOString(),
           // updatedAt: product.updatedAt.toISOString()
         };
@@ -502,16 +514,43 @@ module.exports = {
           })),
         };
       },
-      deleteWishlist: async function({ user_id, wishlist_id }, req) {
+      getWishlistProducts: async function({ user_id }, req) {
+        try {
+            // Fetch wishlist items for the user
+            const wishilists = await Wishlist.fetchUserWishlist(user_id);
+            // Extract product IDs from wishlist items
+            const productIds = wishilists.map(wishlist => wishlist.product_id);
+            // Fetch products based on product IDs
+            const products = await Product.fetchProductsByIds(productIds);
+            // Map each product with its corresponding wishlist ID and quantity
+            const productsWithCartInfo = products.map(product => {
+                const wishlistInfo = wishilists.find(wishlist => wishlist.product_id === product.id);
+                if (wishlistInfo) {
+                    return {
+                        ...product,
+                        wishlist_id: wishlistInfo.id,
+                    };
+                }
+                return product;
+            });
+            // Return combined wishlist and product details
+            return {
+                wishlist: wishilists[0], // Assuming each user has only one wishlist
+                products: productsWithCartInfo,
+            };
+        } catch (error) {
+            throw error;
+        }
+    },
+      deleteWishlist: async function({ user_id, product_id }, req) {
         try {
           // Check if the cart item exists
-          const wishlist = await Wishlist.findById(user_id, wishlist_id);
+          const wishlist = await Wishlist.findById(user_id, product_id);
           if (!wishlist) {
             throw new Error('Wishlist not found');
           }
           // Remove the cart item from the database
-          await Wishlist.deleteById(user_id, wishlist_id);
-          
+          await Wishlist.deleteById(user_id, product_id);
           // Return true to indicate successful removal
           return true;
         } catch (err) {

@@ -1,16 +1,19 @@
 import Products from './Products'
 import { useEffect, useState } from 'react'
 import ReactPaginate from "react-paginate";
-import { useSelector } from 'react-redux';
-import { productsRetrieved } from '../slices/productSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedProducts } from '../slices/productsSlice';
+import { fetchProducts } from '../slices/productsAction';
 
 
 const ProductFeed = ({authToken, user_id}) => {
-  // const [products, setProducts] = useState([])
-  const [totalPages, setTotalPages] = useState(1)
+  const dispatch = useDispatch()
+  const recievedProducts = useSelector(selectedProducts);
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
   const [page, setPage] = useState(0)
-  // const perPage = 6
-  const recievedProducts = useSelector(productsRetrieved)
+  const [totalPages, setTotalPages] = useState(1)
   const perPages = {
     sm: 8,
     md: 9,

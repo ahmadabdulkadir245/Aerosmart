@@ -40,13 +40,13 @@ class CartItems {
     );
   }
 
-  static async findById(user_id, cart_item_id) {
-    const [rows] = await db.execute('SELECT * FROM cart_items WHERE id = ? AND user_id = ?', [cart_item_id, user_id]);
+  static async findById(user_id, product_id) {
+    const [rows] = await db.execute('SELECT * FROM cart_items WHERE product_id = ? AND user_id = ?', [product_id, user_id]);
     return rows[0];
   }
   
-  static async deleteById(user_id, cart_item_id) {
-    await db.execute('DELETE FROM cart_items WHERE id = ? AND user_id = ?', [cart_item_id, user_id]);
+  static async deleteById(user_id, product_id) {
+    await db.execute('DELETE FROM cart_items WHERE product_id = ? AND user_id = ?', [product_id, user_id]);
   }
   static async delete(id) {
     await db.execute('DELETE FROM cart_items WHERE product_id = ?', [id]);

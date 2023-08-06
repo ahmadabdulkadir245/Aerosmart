@@ -26,18 +26,11 @@ module.exports = class User {
         console.error(error);
       }
     }
-    static userEmailExist(email) {
-      return db.execute(
-        'SELECT * FROM users WHERE email = ?',
-        [email]
-      )
+    static async userEmailExist(email) {
+      const [rows] = await db.execute('SELECT id, email, password, isAdmin FROM users WHERE email = ?', [email]);
+      return rows.length > 0 ? rows[0] : null;
     }
-    static userExist(id) {
-      return db.execute(
-        'SELECT * FROM users WHERE id = ?',
-        [id]
-      )
-    }
+
     static async fetchUsers() {
       const [rows] = await db.execute(
         'SELECT * FROM users',

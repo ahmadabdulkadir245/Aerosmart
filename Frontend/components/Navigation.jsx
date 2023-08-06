@@ -15,6 +15,7 @@ import { addSearchedWord } from '../slices/searchSlice';
 import MobileNav from './MobileNav';
 import SearchSuggesstions from './SearchSuggesstions';
 import {AuthContext} from '../context/authContext'
+import { selectedCartItems, selectedCartlength } from '../slices/cartItemSlice';
 
 
 const items = []
@@ -62,7 +63,8 @@ function Navigation() {
     }
   }
   // const acountInCart = useSelector(selectCartItems)
-  const productInCart = useSelector(selectCartItems)
+  const productInCart = useSelector(selectedCartItems)
+  const cartlength = useSelector(selectedCartlength)
 
   const {logout, authToken} = useContext(AuthContext)
   const logoutHandler  = () => {
@@ -133,7 +135,7 @@ function Navigation() {
                   className='link flex items-center relative '
                 >
                   <span className='absolute -top-1 -right-1 md:right-10 h-4 text-xs w-4 bg-yellow-400 rounded-full  text-center font-semibold items-center font-titilliumWeb transition-all duration-500 linear animate-pingOnce' key={productInCart.length} >
-                    {productInCart.length}
+                    {cartlength}
                   </span>
                   <AiOutlineShoppingCart className='w-6 h-6 lg:w-7 lg:h-7' />
                   <p className='hidden lg:inline font-semibold md:text-sm font-titilliumWeb'>

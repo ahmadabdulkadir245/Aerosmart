@@ -106,7 +106,6 @@ const saveNewName = async (event) => {
           setMessage({success:null, failed:null});
         }, 2000)
         // setLoading(true)
-
     // setLoading(false);
   } catch (error) {
     setMessage({

@@ -6,36 +6,64 @@ import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { TbCurrencyNaira } from 'react-icons/tb';
 import { CartContext } from '../context/cartContext';
 import { addQuantity, deleteCartItem, reduceQuantity } from '../slices/cartItemsSlice';
+import axios from 'axios';
+import { addProductToCart, removeProductFromCart, updateProductQuantity } from '../slices/cartAction';
 
-function DesktopCart({ id, title, productQty, price, description, image_url, onRemove, user_id, authToken }) {
+function DesktopCart({ id, title, productQty, price, description, image_url, user_id, authToken, cart_id }) {
     const dispatch = useDispatch();
-  const {addProductToCart} = useContext(CartContext)
-    const minusOneItemFromCart = () => {
-      // remove the item from redux
-      if (productQty < 2) {
-        return;
-      }
-      if(!authToken) {
-        dispatch(reduceQuantity({ id }));
-        return
-      }
-      addProductToCart(Number(user_id), Number(id), -1)
 
+  const handleRemoveFromCart = async () => {
+    if (!id) return;
+    if(user_id == null) {
+      dispatch(removeProductFromCart({ id: id })); 
+      return
+    }
+    try {
+      const response = await axios.post('/api/deleteFromCart', {
+        user_id: Number(user_id),
+        product_id: Number(id),
+      });
+  
+      if (response.data.success) {
+        // Remove the item from Redux after successful deletion from the server
+        dispatch(removeProductFromCart({ id: id })); // Assuming `id` represents cart_item_id
+        console.log('Item removed from cart successfully');
+      } else {
+        // Handle failure
+        console.error('Failed to remove item from cart');
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+    }
+  };  
+
+    const addOneItemToCart = async () => {
+      if(user_id == null) {
+        dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
+        return
+      }
+      try {
+        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
+        const result = response.data;
+        dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
+      } catch (error) {
+        console.error(error);
+      }
     };
-    const addOneItemToCart = () => {
-      if(!authToken) {
-        dispatch(addQuantity({id}))
+    const minusOneItemFromCart = async () => {
+      if (productQty <= 1) return
+      if(user_id == null) {
+        dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
         return
       }
-          addProductToCart(Number(user_id), Number(id), 1)
-    }
-    const removeItemFromCart = () => {
-      if(!authToken) {
-        dispatch(deleteCartItem({id}))
-        return
+      try {
+        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: -1 });
+        const result = response.data;
+        dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
+      } catch (error) {
+        console.error(error);
       }
-      onRemove()
-    }
+    };
   return (
     <>
     <div className='flex justify-between  space-x-5 my-5 text-xs px-[12px]'>
@@ -57,7 +85,7 @@ function DesktopCart({ id, title, productQty, price, description, image_url, onR
           }`} onClick={minusOneItemFromCart} >
                  <AiOutlineMinus className='text-white' />
                 </div>
-                <p>
+                <p className='font-changa'>
                 {productQty}
                 </p>
                 <div className='flex justify-center items-center p-[6px] px-[10px] bg-yellow-400 rounded-sm cursor-pointer'  onClick={addOneItemToCart}>
@@ -66,12 +94,12 @@ function DesktopCart({ id, title, productQty, price, description, image_url, onR
                 </div>
 
                 <div>
-                <button className="hidden capitalize px-5 h-[38px] rounded-sm  border-[1px]  bg-transparent  m-auto tracking-wide cursor-pointer hover:bg-red-600 active:bg-red-500 hover:text-white transition-all duration-300 ease-in-out"  onClick={removeItemFromCart}>REMOVE
+                <button className="hidden capitalize px-5 h-[38px] rounded-sm  border-[1px]  bg-transparent  m-auto tracking-wide cursor-pointer hover:bg-red-600 active:bg-red-500 hover:text-white transition-all duration-300 ease-in-out"  onClick={handleRemoveFromCart}>REMOVE
                 </button>
                 </div>
                 <div
           className='flex space-x-3 items-center  bg-red-500  py-2 px-3 text-white rounded-md hover:bg-red-600 cursor-pointer transition duration-200 ease-in'
-          onClick={removeItemFromCart}
+          onClick={handleRemoveFromCart}
         >
           <AiOutlineDelete className='' /> 
       </div>

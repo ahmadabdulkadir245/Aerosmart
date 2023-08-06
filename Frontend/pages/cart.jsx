@@ -2,7 +2,7 @@ import Head from "next/head"
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { useSelector, useDispatch } from "react-redux";
-import { addToCart, emptyCart, selectedcartItems } from "../slices/cartSlice";
+import { addToCart } from "../slices/cartSlice";
 import {TbCurrencyNaira} from "react-icons/tb"
 import { useRouter } from "next/navigation";
 import { addToOrder } from "../slices/orderSlice";
@@ -10,35 +10,31 @@ import DesktopCart from "../components/DesktopCart";
 import ProductSlider from "../components/ProductSlider";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
-import axios from "axios";
-import { parse } from 'cookie';
 import { removeFromCart } from "../utils/cartFuncitions";
 import { getAuthTokenFromCookie, getUserIDFromCookie } from "../utils/cookie";
-import { fetchCartItems, fetchProductById, selectCartItems, selectProducts, selectTotal } from "../slices/cartItemsSlice";
+import { selectCartTotal, selectedCartItems } from "../slices/cartItemSlice";
+import { fetchCart } from "../slices/cartAction";
+import { selectedProducts } from "../slices/productsSlice";
+import { fetchProducts } from "../slices/productsAction";
 
 
 
-
-
-function Cart({products, cart, user_id, authToken}) {
+function Cart({  user_id, authToken}) {
   const router = useRouter()
   const dispatch = useDispatch()
-  const cartItems = useSelector(selectCartItems);
-  const cartItemsTest = useSelector(selectCartItems); 
-  const productsTest = useSelector(selectProducts) || []
-  const ids =cartItemsTest.map(product => { 
-    return product.product_id
-  })
+  let cartItems = []
+  const cartTotal = useSelector(selectCartTotal)
+  const cartProducts = useSelector(selectedCartItems)
   useEffect(() => {
-    if(!user_id) {
-      return
-    }
-    setLoading(true)
-    dispatch(fetchCartItems());
-    dispatch(fetchProductById(ids, setLoading))
-    // dispatch(fetchCartItemsAndProducts(user_id));
-  }, [user_id, dispatch, fetchCartItems, fetchProductById]);
-  const cartTotal = useSelector(selectTotal)
+    if(user_id == null) return;
+      dispatch(fetchCart(user_id))
+  }, [dispatch])
+
+  const products = useSelector(selectedProducts);
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
   const addProductToCart = () => {
     const Product = {
       id,
@@ -49,68 +45,11 @@ function Cart({products, cart, user_id, authToken}) {
     };
     dispatch(addToCart(Product));
   };
-
-  const getProductsInCart = (carts, products) => {
-    const productIdsInCart = carts.map((cart) => cart.product_id);
-    const productsInCart = productsTest.map((product) => {
-      // Find the cart item that matches the current product_id
-      const cartItem = carts.find((cart) => cart.product_id === product.id);
-      // If cartItem is found, create a new object with product, quantity, and cart_id properties
-      if (cartItem) {
-        return {
-          product: {
-            ...product,
-            cart_id: cartItem.id, // Add the cart id to the product object
-          },
-          qty: cartItem.quantity,
-        };
-      }
-      // If cartItem is not found, create a new object with product, quantity 0, and no cart_id
-      return {
-        product: {
-          ...product,
-          cart_id: null, // No cart_id since the product is not in the cart
-        },
-        qty: 0,
-      };
-    });
-    
-    
-    // Filter out products not in the cart
-    const filteredProductsInCart = productsInCart.filter((product) => product.qty > 0);
   
-    return filteredProductsInCart;
-  };
-  
-  
-  // Assuming you have the carts and products arrays
-  const filteredProducts = getProductsInCart(cart, products);
-  useEffect(() => {
-    // Fetch filteredProducts containing both products and their quantities
-    const filteredProducts = getProductsInCart(cart, products);
-    // Dispatch addToCart action for each product with its corresponding quantity
-    filteredProducts.forEach((productWithQty) => {
-      dispatch(addToCart(productWithQty));
-    });
-  }, [cart, products, dispatch]);
-
-
-
-const removeItemFromCart = async (cart_item_id) => {
-  try {
-    await removeFromCart(Number(user_id), cart_item_id);
-    // Perform any additional actions after successful removal
-    console.log('Item removed from cart successfully.');
-  } catch (error) {
-    console.error('Error removing item from cart:', error.message);
-  }
-};
-  
-  // console.log(cartItems)
   const checkoutHandler =  () => {
     if(authToken) {
       router.push('/checkouts')
-      dispatch(addToOrder(cartItemsTest))
+      dispatch(addToOrder(cartProducts))
     }else {
       router.push('/login')
     }
@@ -124,6 +63,9 @@ const removeItemFromCart = async (cart_item_id) => {
       setLoading(false)
     }, 400)
   }, [loading])
+
+
+
   
   if (loading) {
     return<>
@@ -132,9 +74,7 @@ const removeItemFromCart = async (cart_item_id) => {
     </> 
   }
 
-const condition = cartItemsTest.length < 0 && filteredProducts.length < 0
-
-  if (filteredProducts.length == []) {
+  if (cartProducts.length < 1) {
     return (
       <>
       <Header /> 
@@ -166,46 +106,23 @@ const condition = cartItemsTest.length < 0 && filteredProducts.length < 0
         </div>
       
     </div>
-        {authToken ? 
-        <>
-        {filteredProducts.map(
-          ({product, qty}) => (
+ 
+        {cartProducts.map(
+          ({id, title, price, description, image_url, cart_id, cart_quantity}) => (
             <DesktopCart
-            key={product?.id}
-            id={product?.id}
-            title={product?.title}
-            price={product?.price}
-            description={product?.description}
-            productQty={qty}
-            image_url={product?.image_url}
-            onRemove={() => removeItemFromCart(product?.cart_id)}
+            key={id}
+            id={id}
+            title={title}
+            price={price}
+            description={description}
+            productQty={cart_quantity}
+            image_url={image_url}
             user_id={user_id}
+            cart_id={cart_id}
             authToken={authToken}
             />
             )
             )}
-        </>  
-        :
-        <>
-            {cartItemsTest.map(
-          ({product, qty}) => (
-            <DesktopCart
-            key={product?.id}
-            id={product?.id}
-            title={product?.title}
-            price={product?.price}
-            description={product?.description}
-            productQty={qty}
-            image_url={product?.image_url}
-            onRemove={() => removeItemFromCart(product?.cart_id)}
-            user_id={user_id}
-            />
-            )
-            )}
-        </>  
-      
-      } 
-
 
       </div>
             <div className="">
@@ -217,7 +134,7 @@ const condition = cartItemsTest.length < 0 && filteredProducts.length < 0
             </div>
             <div className="flex justify-between px-8 pt-6 lg:pt-6  ">
             <p > Products:</p>
-            <p className="flex items-center font-changa">{cartItems.length}</p>
+            <p className="flex items-center font-changa">{cartProducts.length}</p>
             </div>
             <div className="flex justify-between px-8 py-4  ">
             <p >Subtotal:</p>
@@ -255,59 +172,12 @@ export default Cart
 
 
 export const getServerSideProps = async (context) => {
-  const page = 1;
-  const perPage = 100;
   const user_id = getUserIDFromCookie(context.req);
   const authToken = getAuthTokenFromCookie(context.req);
-  try {
-    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      query: `
-        {
-          products(page: ${page}, perPage: ${perPage}) {
-            products {
-              id
-              title
-              price
-              image_url
-              category
-              quantity
-              description
-            }
-          }
-
-            cart(user_id: ${user_id}) {
-              carts {
-                id
-                user_id
-                quantity
-                product_id
-              }
-            }
-        }
-      `,
-    });
-
-    const products = response.data?.data?.products?.products || [];
-    const cart = response.data?.data?.cart?.carts || [] ;
-
     return {
       props: {
-        products,
-        cart,
-        user_id, 
-        authToken
+        authToken,
+        user_id,
       },
     };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        products: [],
-        cart: [],
-      },
-    };
-  }
 };
-
-
-

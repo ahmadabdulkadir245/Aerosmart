@@ -5,18 +5,18 @@ const initialState = {
 };
 
 export const productSlice = createSlice({
-    name: "products",
+    name: "product",
     initialState,
     reducers: {
-      getProducts: (state, action) => {
+      getProduct: (state, action) => {
         state.products = action.payload;
       },
     },
   });
 
-  export const { getProducts } = productSlice.actions;
+  export const { getProduct} = productSlice.actions;
 
-export const productsRetrieved = (state) => state.products.products;
+export const productsRetrieved = (state) => state.product.products;
 
 export default productSlice.reducer;
 

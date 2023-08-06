@@ -28,6 +28,22 @@ function Login() {
       .catch((err) => console.log(err));
   };
 
+  useEffect(() => {
+    const handleBackButton = (e) => {
+      e.preventDefault();
+      // Redirect the user to the home page using router.replace()
+      router.replace('/');
+    };
+
+    // Add an event listener to the 'popstate' event (back button press)
+    window.addEventListener('popstate', handleBackButton);
+
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('popstate', handleBackButton);
+    };
+  }, [router]);
+
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [passwordVissble, setPasswordVissible] = useState(false)

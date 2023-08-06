@@ -5,6 +5,8 @@ import { useDispatch } from "react-redux"
 import {TbCurrencyNaira} from "react-icons/tb"
 import { getUserIdFromCookie } from "../utils/user_id";
 import { addToCart } from "../slices/cartItemsSlice";
+import axios from "axios";
+import { addProductToCart } from "../slices/cartAction";
 
 const Products = ({ id, title, price, description, image_url , category, authToken, user_id}) => {
     const [loading, setLoading] = useState(false)
@@ -15,19 +17,23 @@ const Products = ({ id, title, price, description, image_url , category, authTok
     }, [loading])
     
     const dispatch = useDispatch();
-    // const addProductToCart = () => {
-    //   const Product = {
-    //     id,
-    //     title,
-    //     price,
-    //     description,
-    //     image_url,
-    //   };
-    //   dispatch(addToCart(Product));
-    // };
-
-    const addProductToCart = (e) => {
-      if(!authToken) {
+    const handleAddToCart = async () => {
+      if(user_id == null) {
+        const Product = {
+          id,
+          title,
+          price,
+          description,
+          image_url,
+          cart_quantity: 1
+        };
+        dispatch(addProductToCart(Product));
+        return
+      }
+      try {
+        setLoading(true);
+        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
+        const result = response.data;
         const Product = {
           id,
           title,
@@ -35,42 +41,12 @@ const Products = ({ id, title, price, description, image_url , category, authTok
           description,
           image_url,
         };
-        dispatch(addToCart(Product));
-        return
+        dispatch(addProductToCart(Product));
+        } catch (error) {
+        setLoading(false);
+        console.error(error);
       }
-
-      e.preventDefault()
-        let graphqlQuery = {
-         query: `
-         mutation AddToCart($user_id: Int, $quantity: Int, $product_id: Int) {
-           addToCart(cartInput: {user_id: $user_id, product_id: $product_id, quantity: $quantity}) {
-             user_id
-             product_id
-             quantity
-           }
-         }
-       `,
-         variables: {
-           user_id: Number(user_id),
-           product_id: Number(id),
-           quantity: 1
-         }
-       };
-
-
-       fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(graphqlQuery)
-      })
-        .then(res => {  
-          // console.log(res.json())
-          return res.json();
-        })
-      }
-  
+    };
   return (
     <>
       {loading ? (
@@ -101,7 +77,7 @@ const Products = ({ id, title, price, description, image_url , category, authTok
 
           <button
             className='mt-1 lg:mt-2 mx-auto bg-yellow-500 hover:bg-yellow-400 p-2 w-[90%] text-white rounded-sm  uppercase mb-2 text-xs font-poppins transition-all delay-100 ease-in'
-            onClick={addProductToCart}
+            onClick={handleAddToCart}
           >
             Add To Cart
           </button>

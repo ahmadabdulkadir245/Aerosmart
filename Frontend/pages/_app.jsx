@@ -34,8 +34,6 @@ const titilliumWeb = Titillium_Web({
 })
 
 
-// store.dispatch(fetchProductById([20]));
-store.dispatch(fetchCartItems());
 function MyApp({ Component, pageProps  }) {
 
   return (

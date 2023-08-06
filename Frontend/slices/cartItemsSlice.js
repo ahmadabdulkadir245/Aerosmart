@@ -19,7 +19,7 @@ const fetchUserData = async (user_id) => {
     const graphqlQuery = {
       query: `
         query FetchCartItems($user_id: Int!) {
-          cart(user_id: $user_id) {
+          carts(user_id: $user_id) {
             carts {
               id
               user_id
@@ -35,7 +35,7 @@ const fetchUserData = async (user_id) => {
     };
 
     const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, graphqlQuery);
-    return response.data.data.cart.carts;
+    return response.data.data.carts.carts;
   } catch (error) {
     // Handle errors if needed.
     throw new Error('Error fetching user cart items');

@@ -15,8 +15,8 @@ class Wishlist {
       );
       this.id = result.insertId;
     }
-    static async deleteById(wishlist_id, user_id) {
-      await db.execute('DELETE FROM wishlist WHERE id = ? AND user_id = ?', [user_id, wishlist_id]);
+    static async deleteById(product_id, user_id) {
+      await db.execute('DELETE FROM wishlist WHERE product_id = ? AND user_id = ?', [user_id, product_id]);
     }
 
   static async fetchUserWishlist(user_id) {
@@ -35,8 +35,8 @@ class Wishlist {
     return rows;
   }
 
-  static async findById(user_id, wishlist_id) {
-    const [rows] = await db.execute('SELECT * FROM wishlist WHERE id = ? AND user_id = ?', [wishlist_id, user_id]);
+  static async findById(user_id, product_id) {
+    const [rows] = await db.execute('SELECT * FROM wishlist WHERE product_id = ? AND user_id = ?', [product_id, user_id]);
     return rows[0];
   }
   
