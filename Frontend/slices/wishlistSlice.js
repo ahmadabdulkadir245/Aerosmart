@@ -49,7 +49,6 @@ const wishlistSlice = createSlice({
      state.wishlists = newCart;
       },
       wishlistExist: (state, action) => {
-        console.log(action.payload)
         const { prodId} = action.payload
         return state.wishlists.find(wishlist => wishlist.id === prodId)
       },

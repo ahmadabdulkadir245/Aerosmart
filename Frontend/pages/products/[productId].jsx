@@ -25,7 +25,9 @@ function Product({ user_id}) {
   const dispatch = useDispatch()
   const products = useSelector(selectedProducts);
   const wishlists = useSelector(selectedWishlistItems)
-  const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
+  // const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
+  const [wishlistExist, setWishlistExist] = useState(false)
+  const [render, setRender] = useState(false)
   const product = products.find(product => product.id == prodId)
 
   useEffect(() => {
@@ -64,6 +66,7 @@ function Product({ user_id}) {
 
         const handleAddToWishlist = async () => {
           if(user_id == null) return
+          setWishlistExist(!wishlistExist)
           try {
             const response = await axios.post('/api/addToWishlist', { id: product.id, user_id: user_id });
             const result = response.data;
@@ -82,6 +85,7 @@ function Product({ user_id}) {
 
         const handleRemoveFromWishlist = async () => {
           if (!product?.id) return;
+          setWishlistExist(!wishlistExist)
           try {
             const response = await axios.post('/api/deleteFromWishlist', {
               user_id: Number(user_id),
@@ -99,8 +103,7 @@ function Product({ user_id}) {
 
         useEffect(() => {
           dispatch(FetchWishlist(user_id))
-          }, [dispatch, handleAddToWishlist, handleRemoveFromWishlist]);
-
+          }, [dispatch,wishlistExist]);
 
   return (
     <>
@@ -200,7 +203,7 @@ function Product({ user_id}) {
               </div>
             </div>
 
-            <div className={`flex items-center justify-center text-white  space-x-2 cursor-pointer ${wishlistExist ? 'bg-red-500' : 'bg-gray-400'} rounded-full  w-[100px] h-[35px] hover:bg-red-500 transition-all delay-100`}  onClick={ wishlistExist ? handleRemoveFromWishlist : handleAddToWishlist} >
+            <div className={`flex items-center justify-center text-white  space-x-2 cursor-pointer ${wishlistExist ? 'bg-red-500' : 'bg-gray-400'} rounded-full  w-[100px] h-[35px] lg:hover:bg-red-500 transition-all delay-100`}  onClick={ !wishlistExist ? handleAddToWishlist  : handleRemoveFromWishlist} >
             <AiFillHeart className="w-5 h-5"/>
             <p className="font-changa">1000</p>
             </div>

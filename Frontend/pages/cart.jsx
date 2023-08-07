@@ -64,8 +64,6 @@ function Cart({  user_id, authToken}) {
     }, 400)
   }, [loading])
 
-
-
   
   if (loading) {
     return<>
@@ -151,15 +149,15 @@ function Cart({  user_id, authToken}) {
 
       <div className=" px-3 shadow-xl w-full  text-lg  pt-4 pb-2 overflow-hiddentext-gray-500 lg:hidden ">
       <button className="capitalize w-[90%] h-[48px] rounded-md text-white  text-sm bg-yellow-500  mb-2 flex items-center justify-center m-auto font-changa" 
-      onClick={checkoutHandler}>Go To Checkout | <TbCurrencyNaira  className="w-5 h-5"/>{authToken ? cartTotal.toLocaleString() : 0}
+      onClick={checkoutHandler}>Go To Checkout | <TbCurrencyNaira  className="w-5 h-5"/>{cartTotal.toLocaleString()}
       </button>
           </div>
 
             {/* slider */}
             <div className="max-w-7xl mx-auto">
-      <ProductSlider sectionTitle={'latest products'} products={products} path={'/'}/>
+      <ProductSlider sectionTitle={'latest products'} products={products.slice(5, 14)} path={'/'}/>
 
-      <ProductSlider sectionTitle={'discount products'} products={products} path={'/'} discount={true}/>
+      <ProductSlider sectionTitle={'discount products'} products={products.slice(15,24)} path={'/'} discount={true}/>
         </div>
 
           <Footer/>

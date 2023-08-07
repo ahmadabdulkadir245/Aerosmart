@@ -10,17 +10,24 @@ import ReactPaginate from "react-paginate"
 import Filter from "../../components/Filter"
 import FilterBar from "../../components/FilterBar"
 import Footer from "../../components/Footer"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { productsRetrieved } from "../../slices/productSlice"
 import ProductSlider from "../../components/ProductSlider"
 import axios from 'axios';
+import { selectedProducts } from "../../slices/productsSlice"
+import { fetchProducts } from "../../slices/productsAction"
 
 
 
-function SearchResultPage({products}) {
+function SearchResultPage({}) {
     const router = useRouter()
     const [totalPages, setTotalPages] = useState(1)
     const [page, setPage] = useState(0)
+    const dispatch = useDispatch()
+    const products = useSelector(selectedProducts);
+    useEffect(() => {
+      dispatch(fetchProducts());
+    }, [dispatch]);
     const searchResult = router.query.searchResult
     const searchFilter = products.filter((product) => {
       return product.category == searchResult
@@ -189,44 +196,4 @@ function SearchResultPage({products}) {
 
 export default SearchResultPage 
 
-
-export const getServerSideProps = async (context) => {
-  const page = 1;
-  const perPage = 100;
-
-  try {
-    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      query: `
-        {
-          products(page: ${page}, perPage: ${perPage}) {
-            products {
-              id
-              title
-              price
-              image_url
-              category
-              quantity
-              description
-            }
-          }
-        }
-      `,
-    });
-
-    const products = response.data?.data?.products?.products || [];
-
-    return {
-      props: {
-        products,
-      },
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        products: [],
-      },
-    };
-  }
-};
 

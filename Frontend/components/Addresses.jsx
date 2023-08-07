@@ -67,10 +67,7 @@ function Addresses({user_id, setLoading}) {
       <div className="text-center uppercase my-10 text-red-500"> 
         No address has been set
         </div>}
-
-              
-             
-              </div>
+      </div>
   )
 }
 

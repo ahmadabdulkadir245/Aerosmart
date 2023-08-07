@@ -41,7 +41,6 @@ const addressSlice = createSlice({
       },
       setAsDefault: (state, action) => {
         const id = action.payload;
-        console.log(id);
         state.addresses.forEach(address => address.is_default = false)
         const defaultAddress = state.addresses.find(address => address.id === id);
         if (defaultAddress) {
