@@ -14,7 +14,7 @@ import { useEffect, useState } from "react";
 import { getAuthTokenFromCookie, getUserIDFromCookie } from "../../utils/cookie";
 import { selectedProducts } from "../../slices/productsSlice";
 import { fetchProducts } from "../../slices/productsAction";
-import { FetchWishlist, addProductToWishlist } from "../../slices/wishlistAction";
+import { FetchWishlist, addProductToWishlist, removeProductFromWishlist } from "../../slices/wishlistAction";
 import { selectedWishlistItems } from "../../slices/wishlistSlice";
 import { addProductToCart } from "../../slices/cartAction";
 
@@ -27,6 +27,7 @@ function Product({ user_id}) {
   const wishlists = useSelector(selectedWishlistItems)
   // const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
   const [wishlistExist, setWishlistExist] = useState(false)
+  const [render, setRender] = useState(false)
   const product = products.find(product => product.id == prodId)
 
   useEffect(() => {
@@ -46,7 +47,6 @@ function Product({ user_id}) {
       dispatch(addProductToCart(Product));
       return
     }
-    dispatch(addProductToCart(Product));
     try {
       const response = await axios.post('/api/addToCart', { id: Number(product.id), user_id: Number(user_id), qauntity: 1 });
       const result = response.data;
@@ -57,6 +57,7 @@ function Product({ user_id}) {
         description: product.description,
         image_url: product.image_url,
       };
+      dispatch(addProductToCart(Product));
       } catch (error) {
       console.error(error);
     }
@@ -67,11 +68,11 @@ function Product({ user_id}) {
           if(user_id == null) return
           setWishlistExist(!wishlistExist)
           const Product = {
-            id,
-            title,
-            price,
-            description,
-            image_url,
+            id: product?.id,
+            title: product?.title,
+            price: product?.price,
+            description: product?.description,
+           image_url: product?.image_url,
           };
           dispatch(addProductToWishlist(Product));
           try {
@@ -103,7 +104,7 @@ function Product({ user_id}) {
         useEffect(() => {
           dispatch(FetchWishlist(user_id))
           }, [dispatch,wishlistExist]);
-
+          console.log(wishlistExist)
   return (
     <>
     <Header />
