@@ -27,7 +27,6 @@ function Product({ user_id}) {
   const wishlists = useSelector(selectedWishlistItems)
   // const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
   const [wishlistExist, setWishlistExist] = useState(false)
-  const [render, setRender] = useState(false)
   const product = products.find(product => product.id == prodId)
 
   useEffect(() => {
@@ -47,6 +46,7 @@ function Product({ user_id}) {
       dispatch(addProductToCart(Product));
       return
     }
+    dispatch(addProductToCart(Product));
     try {
       const response = await axios.post('/api/addToCart', { id: Number(product.id), user_id: Number(user_id), qauntity: 1 });
       const result = response.data;
@@ -57,7 +57,6 @@ function Product({ user_id}) {
         description: product.description,
         image_url: product.image_url,
       };
-      dispatch(addProductToCart(Product));
       } catch (error) {
       console.error(error);
     }
@@ -67,17 +66,17 @@ function Product({ user_id}) {
         const handleAddToWishlist = async () => {
           if(user_id == null) return
           setWishlistExist(!wishlistExist)
+          const Product = {
+            id,
+            title,
+            price,
+            description,
+            image_url,
+          };
+          dispatch(addProductToWishlist(Product));
           try {
             const response = await axios.post('/api/addToWishlist', { id: product.id, user_id: user_id });
             const result = response.data;
-            const Product = {
-              id,
-              title,
-              price,
-              description,
-              image_url,
-            };
-            dispatch(addProductToWishlist(Product));
             } catch (error) {
             console.error(error);
           }
@@ -86,13 +85,13 @@ function Product({ user_id}) {
         const handleRemoveFromWishlist = async () => {
           if (!product?.id) return;
           setWishlistExist(!wishlistExist)
+          dispatch(removeProductFromWishlist({ id: product?.id })); // Assuming `id` represents cart_item_id
           try {
             const response = await axios.post('/api/deleteFromWishlist', {
               user_id: Number(user_id),
               product_id: Number(product?.id),
             });
             if (response.data.success) {
-              dispatch(removeProductFromWishlist({ id: product?.id })); // Assuming `id` represents cart_item_id
             } else {
               console.error('Failed to remove item from cart');
             }
