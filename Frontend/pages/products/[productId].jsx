@@ -27,7 +27,6 @@ function Product({ user_id}) {
   const wishlists = useSelector(selectedWishlistItems)
   // const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
   const [wishlistExist, setWishlistExist] = useState(false)
-  const [render, setRender] = useState(false)
   const product = products.find(product => product.id == prodId)
 
   useEffect(() => {
@@ -47,17 +46,17 @@ function Product({ user_id}) {
       dispatch(addProductToCart(Product));
       return
     }
+    const Product = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      description: product.description,
+      image_url: product.image_url,
+    };
+    dispatch(addProductToCart(Product));
     try {
       const response = await axios.post('/api/addToCart', { id: Number(product.id), user_id: Number(user_id), qauntity: 1 });
       const result = response.data;
-      const Product = {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        description: product.description,
-        image_url: product.image_url,
-      };
-      dispatch(addProductToCart(Product));
       } catch (error) {
       console.error(error);
     }
@@ -104,7 +103,6 @@ function Product({ user_id}) {
         useEffect(() => {
           dispatch(FetchWishlist(user_id))
           }, [dispatch,wishlistExist]);
-          console.log(wishlistExist)
   return (
     <>
     <Header />
