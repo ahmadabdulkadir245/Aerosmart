@@ -42,10 +42,10 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
         return
       }
-      const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
+      dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
       try {
+        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
         const result = response.data;
-        dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
       } catch (error) {
         console.error(error);
       }
@@ -56,10 +56,10 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
         return
       }
-      const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: -1 });
+      dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
       try {
+        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: -1 });
         const result = response.data;
-        dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
       } catch (error) {
         console.error(error);
       }
@@ -113,5 +113,3 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
 }
 
 export default DesktopCart
-
-
