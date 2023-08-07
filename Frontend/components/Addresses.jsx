@@ -15,10 +15,10 @@ function Addresses({user_id, setLoading}) {
 
   const handleSetDefaultAddress = async (address_id) => {
     if(user_id == null) return
+    dispatch(setDefaultAddress(address_id));
     try {
       const response = await axios.post('/api/setDefaultAddress', { address_id: address_id, user_id: user_id });
       const result = response.data;
-      dispatch(setDefaultAddress(address_id));
       } catch (error) {
       console.error(error);
     }
@@ -26,6 +26,7 @@ function Addresses({user_id, setLoading}) {
 
   const handleDeleteAddress= async (address_id) => {
     if (!address_id) return;
+    dispatch(removeUserAddress({ id: address_id })); // Assuming `id` represents cart_item_id
     try {
       setLoading(true);
       const response = await axios.post('/api/deleteAddress', {
@@ -33,7 +34,6 @@ function Addresses({user_id, setLoading}) {
         address_id: Number(address_id),
       });
       if (response.data.success) {
-        dispatch(removeUserAddress({ id: address_id })); // Assuming `id` represents cart_item_id
       } else {
         console.error('Failed to remove item from cart');
       }

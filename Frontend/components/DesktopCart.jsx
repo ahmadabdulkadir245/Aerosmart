@@ -18,6 +18,7 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
       dispatch(removeProductFromCart({ id: id })); 
       return
     }
+    dispatch(removeProductFromCart({ id: id })); // Assuming `id` represents cart_item_id
     try {
       const response = await axios.post('/api/deleteFromCart', {
         user_id: Number(user_id),
@@ -26,7 +27,6 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
   
       if (response.data.success) {
         // Remove the item from Redux after successful deletion from the server
-        dispatch(removeProductFromCart({ id: id })); // Assuming `id` represents cart_item_id
         console.log('Item removed from cart successfully');
       } else {
         // Handle failure
@@ -42,8 +42,8 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
         return
       }
+      const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
       try {
-        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
         const result = response.data;
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty + 1}));
       } catch (error) {
@@ -56,8 +56,8 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
         return
       }
+      const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: -1 });
       try {
-        const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: -1 });
         const result = response.data;
         dispatch(updateProductQuantity({id: id, cart_quantity: productQty - 1}));
       } catch (error) {

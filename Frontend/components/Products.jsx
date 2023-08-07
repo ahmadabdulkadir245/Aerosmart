@@ -30,18 +30,18 @@ const Products = ({ id, title, price, description, image_url , category, authTok
         dispatch(addProductToCart(Product));
         return
       }
+      const Product = {
+        id,
+        title,
+        price,
+        description,
+        image_url,
+      };
+      dispatch(addProductToCart(Product));
       try {
         setLoading(true);
         const response = await axios.post('/api/addToCart', { id: id, user_id: user_id, qauntity: 1 });
         const result = response.data;
-        const Product = {
-          id,
-          title,
-          price,
-          description,
-          image_url,
-        };
-        dispatch(addProductToCart(Product));
         } catch (error) {
         setLoading(false);
         console.error(error);
