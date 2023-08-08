@@ -55,8 +55,8 @@ function MyApp({ Component, pageProps, user_id, authToken }) {
 }
 
 MyApp.getInitialProps = async ({ ctx }) => {
-  const user_id = getUserIDFromCookie({ headers: { cookie: ctx.req.headers.cookie } });
-  const authToken = getAuthTokenFromCookie({ headers: { cookie: ctx.req.headers.cookies} });
+  const user_id = getUserIDFromCookie({ headers: { cookie: ctx?.req?.headers?.cookie } }) 
+  const authToken = getAuthTokenFromCookie({ headers: { cookie: ctx?.req?.headers?.cookies} });
   return { user_id, authToken };
 };
 
