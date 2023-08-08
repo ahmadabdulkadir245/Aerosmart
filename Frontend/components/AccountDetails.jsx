@@ -4,62 +4,34 @@ import { MdCall } from "react-icons/md"
 import { getUserIDFromCookie } from "../utils/cookie";
 import axios from "axios";
 import { useRouter } from "next/router";
+import { useDispatch, useSelector } from "react-redux";
+import { FetchUser, checkUser } from "../slices/userAction";
+import { fetchAddress } from "../slices/addressAction";
+import { selectedUser } from "../slices/userSlice";
+import { selectedaddress } from "../slices/addressSlice";
 
 function AccountDetails({user_id, setLoading}) {
   const router = useRouter()
-  const [addresses, setAddresses] = useState([]);
-  const [message, setMessage] = useState({
-    success: null,
-    failed: null,
-  })
-  
-  // user
+  const dispatch = useDispatch()  
+  const users = useSelector(selectedUser);
+  const addresses = useSelector(selectedaddress)
   const [user, setUser] = useState({
     first_name: '',
     last_name: '',
     email: ''
   })
+
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const graphqlQuery = {
-          query: `
-            query User($id: Int!) {
-              user(id: $id) {
-                id
-                 email
-                 first_name
-                 last_name
-               }
-            }
-          `,
-          variables: {
-            id: Number(user_id)
-          },
-        };
+    dispatch(FetchUser(user_id));
+    dispatch(fetchAddress(user_id))
+    setUser(users)
+  }, [dispatch]);  
 
-        const response = await axios.post(
-          process.env.NEXT_PUBLIC_GRAPHQL_URL,
-          graphqlQuery
-        );
-        const result = await response.data;
-        setUser(result.data.user || null);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-        // setLoading(false);
-        setUser(null)
-      }
-    };
-    fetchUsers();
-  }, [user_id]);
-  const [userData, setUserData] = useState({
-    first_name: user?.first_name,
-    last_name: user?.last_name,
-    email: user?.email,
-  });
-
-
-
+  const [message, setMessage] = useState({
+    success: null,
+    failed: null,
+  })
+  
   const [inputDisabled, setInputDisabled] = useState(true)
   const handleChange = (event) => {
     const { name, value } = event.target;
@@ -69,101 +41,38 @@ function AccountDetails({user_id, setLoading}) {
   event.preventDefault();
   setInputDisabled(false)
 }
-const saveNewName = async (event) => {
-  event.preventDefault();
+const handleEditUserName = async () => {
+  if (!user_id) return;
+  // if(user_id == null) {
+  //   dispatch(removeProductFromCart({ id: id })); 
+  //   return
+  // }
+  setLoading(true)
   try {
-    
-    const graphqlQuery = {
-      query: `
-        mutation UpdateUsername($id: Int!, $first_name: String!, $last_name: String!) {
-          updateUsername(usernameInput: {id: $id, first_name: $first_name, last_name: $last_name}) {
-            first_name
-            last_name
-            email
-          }
-        }
-        `,
-        variables: {
-          id: Number(user_id),
-          first_name: user.first_name,
-          last_name: user.last_name
-        },
-      };
-      
-      const response = await axios.post(
-        process.env.NEXT_PUBLIC_GRAPHQL_URL,
-        graphqlQuery
-        );
-        const result = await response.data;
-        // Assuming the response.data has the format { data: { addresses: { addresses: [] } } }
-        setUserData(result.data.updateUsername);
-        setInputDisabled(true)
-        setMessage({
-          success: "username updated successfully",
-          failed: null
-        })
-        setTimeout(() => {
-          setMessage({success:null, failed:null});
-        }, 2000)
-        // setLoading(true)
-    // setLoading(false);
-  } catch (error) {
+    const response = await axios.post('/api/editUserName', {
+      user_id: Number(user_id),
+      first_name: user.first_name,
+      last_name: user.last_name
+    });
+    dispatch(FetchUser(user_id));
+    setUser(users)
     setMessage({
-      success: null,
-      failed: "failed to update username"
+      success: "username updated successfully",
+      failed: null
     })
     setTimeout(() => {
       setMessage({success:null, failed:null});
-    }, 2000)
-    console.error('Error fetching addresses:', error);
-    // setLoading(false);
+    }, 4000)
+    if (response.data.success) {
+      console.log('user name updated successfully');
+    } else {
+      // Handle failure
+      console.error('Failed to update user name');
+    }
+  } catch (error) {
+    console.error('An error occurred:', error);
   }
-  }
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-
-        const graphqlQuery = {
-          query: `
-            query FetchAddresses($user_id: Int!) {
-              addresses(user_id: $user_id) {
-                addresses {
-                  id
-                  first_name
-                  last_name
-                  address_line_1
-                  address_line_2
-                  phone_number_1
-                  phone_number_2
-                  city
-                  state
-                  is_default
-                }
-              }
-            }
-          `,
-          variables: {
-            user_id: Number(user_id)
-          },
-        };
-
-        const response = await axios.post(
-          process.env.NEXT_PUBLIC_GRAPHQL_URL,
-          graphqlQuery
-        );
-        const result = await response.data;
-        // Assuming the response.data has the format { data: { addresses: { addresses: [] } } }
-        setAddresses(result.data.addresses.addresses);
-        // setDefaultAddress(result.)
-        // setLoading(false);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-        // setLoading(false);
-      }
-    };
-    fetchAddresses();
-  }, [user_id]);
-
+};  
 
   return (
     <div className='col-span-3'>
@@ -257,7 +166,7 @@ const saveNewName = async (event) => {
                      }
 
                 <button className={`w-full  text-white  p-3 rounded-md capitalize lg:hover:bg-green-700 transition-all delay-100 tracking-wide text-xs mt-2 ${!inputDisabled ? 'bg-green-600' : 'bg-green-400'}`}
-                onClick={saveNewName}
+                onClick={handleEditUserName}
                  >
                 save changes
               </button>

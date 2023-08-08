@@ -90,7 +90,7 @@ function DesktopCategpry() {
             <div className="bg-white" key={category.id} onClick={() => router.push(`/search/${category.category}`)}>
                 <div className='lg:flex flex-row-reverse justify-between items-center text-xs cursor-pointer'>
                     <div className="relative bg-gray-300 w-full h-[80px] lg:w-[120px] lg:h-[80px] rounded-md overflow-hidden">
-                        <Image src={category.Image} alt={category.category}  objectFit='cover' layout='fill'/>
+                        <Image src={category.Image} alt={category.category}  objectFit='cover' layout='fill' />
                     </div>
                     <div className='mt-1 lg:mt-0'>
                     <p className='text-xs lg:text-sm tracking-wide capitalize mb-[2px]'>{category.category}</p>

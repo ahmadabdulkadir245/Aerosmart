@@ -69,6 +69,20 @@ module.exports = buildSchema(`
         product_id: Int
     }
 
+    type Orders {
+        id: Int
+        first_name: String
+        last_name: String
+        product_id: Int
+        quantity: Int
+        phone_number_1: String
+        phone_number_2: String
+        shipping_address_1: String
+        shipping_address_2: String
+        order_completed: Boolean
+        product_delivered: Boolean
+    }
+
     type searchSuggessions {
         id: Int
         title: String
@@ -121,6 +135,10 @@ module.exports = buildSchema(`
         wishlists: [Wishlist]!
     }
 
+    type OrdersData {
+        orders: [Orders]!
+    }
+
     input BannerInputData {
         image_url: String!
         category: String!
@@ -161,6 +179,19 @@ module.exports = buildSchema(`
         product_id: Int
     }
 
+    input OrderInputData {
+        first_name: String
+        last_name: String
+        product_id: Int
+        quantity: Int
+        phone_number_1: String
+        phone_number_2: String
+        shipping_address_1: String
+        shipping_address_2: String
+        order_completed: Boolean
+        product_delivered: Boolean
+    }
+
     input ProductInputData {
         user_id: Int
         title: String
@@ -183,6 +214,7 @@ module.exports = buildSchema(`
         getCartInProducts(user_id: Int!): CartWithProducts
         getWishlistProducts(user_id: Int!): WishlistProducts
         wishlists(user_id: Int): WishlistData!
+        orders(user_id: Int): OrdersData!
         productsInCart(ids: [Int]): [Product]
         banners: BannerData!
         addresses(user_id: Int): AddressData

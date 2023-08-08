@@ -29,12 +29,12 @@ const morgan = require('morgan');
 const Product = require('./models/product');
 
 
-app.use('/images', express.static(path.join(__dirname, '/images'), {
-  setHeaders: function(res, filePath) {
-    const mimeType = mime.getType(filePath);
-    res.setHeader('Content-Type', mimeType);
-  }
-}));
+// app.use('/images', express.static(path.join(__dirname, '/images'), {
+//   setHeaders: function(res, filePath) {
+//     const mimeType = mime.getType(filePath);
+//     res.setHeader('Content-Type', mimeType);
+//   }
+// }));
 
 // production 
 const accessLogStream = fs.createWriteStream(
@@ -68,15 +68,6 @@ app.use(session({
 //  Authentication
 app.use(auth)
 
-//   image upload functionality
-const fileStorage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "images");
-  },
-  filename: (req, file, cb) => {
-    cb(null,  '/' + Date.now() +  file.originalname);
-  }
-});
 
 const fileFilter = (req, file, cb) => {
   if (
@@ -118,7 +109,7 @@ app.post('/ulpoad-banner-cloudinary', cloudinaryBannerUpload.single('image'), (r
   }
 
   // Upload file to Cloudinary
-  cloudinary.uploader.upload(path, { public_id: originalname }, (error, result) => {
+  cloudinary.uploader.upload(path, { public_id: originalname, format: 'webp'  }, (error, result) => {
     if (error) {
       console.log('Error uploading file to Cloudinary:', error);
       res.status(500).json({ message: 'Error uploading file to Cloudinary' });
@@ -137,7 +128,7 @@ app.post('/ulpoad-product-cloudinary', cloudinaryProductUpload.single('image'), 
   }
 
   // Upload file to Cloudinary
-  cloudinary.uploader.upload(path, { public_id: originalname }, (error, result) => {
+  cloudinary.uploader.upload(path, { public_id: originalname, format: 'webp'  }, (error, result) => {
     if (error) {
       console.log('Error uploading file to Cloudinary:', error);
       res.status(500).json({ message: 'Error uploading file to Cloudinary' });

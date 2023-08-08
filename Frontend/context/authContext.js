@@ -56,8 +56,8 @@ export const AuthContextProvider = ({ children }) => {
 
       // Save user_id and authToken as HttpOnly cookies with an expiration time of 5 hours
          // Save user_id and authToken as cookies with an expiration time of 5 hours
-         Cookies.set('user_id', user_id, { expires: 5, path: '/', sameSite: 'strict' });
-         Cookies.set('authToken', token, { expires: 5, path: '/', sameSite: 'strict' });
+         Cookies.set('user_id', user_id, { expires: 24, path: '/', sameSite: 'strict' });
+         Cookies.set('authToken', token, { expires: 24, path: '/', sameSite: 'strict' });
     } catch (err) {
       setLoading(false);
       setError(err.response.data.errors[0].message);

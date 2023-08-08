@@ -2,27 +2,37 @@ import Header from '../../components/Header'
 import Checkout from '../../components/Checkout'
 import Footer from '../../components/Footer'
 import { useRouter } from 'next/router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { TbCurrencyNaira } from 'react-icons/tb';
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import Loading from '../../components/Loading';
-import { selectCartItems, selectTotal } from '../../slices/cartItemsSlice';
 import { getAuthTokenFromCookie, getUserIDFromCookie } from '../../utils/cookie';
+import { selectedaddress } from '../../slices/addressSlice';
+import { selectCartTotal, selectedCartItems } from '../../slices/cartItemSlice';
+import { selectedUser } from '../../slices/userSlice';
+import { FetchUser } from '../../slices/userAction';
+import { fetchAddress } from '../../slices/addressAction';
 
 
 function CheckoutPage({user_id}) {
   const router = useRouter()
+  const dispatch = useDispatch()
   const address_id = router?.query?.address_id
-  const orderItems = useSelector(selectCartItems);
-  const orderTotal = useSelector(selectTotal)
+  const orderTotal = useSelector(selectCartTotal)
+  const user = useSelector(selectedUser);
+  const orderItems = useSelector(selectedCartItems);
+  const addresses = useSelector(selectedaddress)
   const doorDeliverFee = 5000
   const standardDeliverFee = 1000
   const [deliveryType, setDeliveryType] = useState('standard');
   const [deliverFee, setDeliveryFee] = useState(standardDeliverFee)
-  const [addresses, setAddresses] = useState([])
   const [selectedAddress, setSelectedAddress] = useState(null)
+  useEffect(() => {
+    dispatch(FetchUser(user_id));
+    dispatch(fetchAddress(user_id))
+  }, [dispatch]);  
   const handleDeliveryTypeChange = (event) => {
     const selectedType = event.target.value;
     let fee = standardDeliverFee; // Default delivery fee for 'standard'
@@ -41,85 +51,7 @@ function CheckoutPage({user_id}) {
     }
   }, [address_id, addresses])
 
-  const [user, setUser] = useState(null)
-  useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const graphqlQuery = {
-          query: `
-            query User($id: Int!) {
-              user(id: $id) {
-                id
-                 email
-                 first_name
-                 last_name
-               }
-            }
-          `,
-          variables: {
-            id: Number(user_id)
-          },
-        };
-
-        const response = await axios.post(
-          process.env.NEXT_PUBLIC_GRAPHQL_URL,
-          graphqlQuery
-        );
-        const result = await response.data;
-        setUser(result.data.user || null);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-        // setLoading(false);
-        setUser([])
-      }
-    };
-    fetchUsers();
-  }, [user_id]);
-
-  //  fetching address 
-  useEffect(() => {
-    const fetchAddresses = async () => {
-      try {
-
-        const graphqlQuery = {
-          query: `
-            query FetchAddresses($user_id: Int!) {
-              addresses(user_id: $user_id) {
-                addresses {
-                  id
-                  first_name
-                  last_name
-                  address_line_1
-                  address_line_2
-                  phone_number_1
-                  phone_number_2
-                  city
-                  state
-                  is_default
-                }
-              }
-            }
-          `,
-          variables: {
-            user_id: Number(user_id)
-          },
-        };
-
-        const response = await axios.post(
-          process.env.NEXT_PUBLIC_GRAPHQL_URL,
-          graphqlQuery
-        );
-        const result = await response.data;
-        setAddresses(result.data.addresses.addresses || []) ;
-
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-        // setLoading(false);
-      }
-    };
-    fetchAddresses();
-  }, [user_id]);
-
+  
 
   const config = {
     public_key: 'FLWPUBK_TEST-de97bc6fec65ed6b94df1dfb3d44ee1d-X',
@@ -220,7 +152,7 @@ function CheckoutPage({user_id}) {
         <div className="flex justify-between items-center">
         <h2 className='uppercase text-gray-700 my-2'>2. delivery address</h2>
         <button className="bg-gray-500 text-white capitalize text-xs py-2 rounded-md cursor-pointer w-[150px] hover:bg-gray-400 transition-all delay-100 ease-in" onClick={() => router.push('/checkouts/addresses')}>
-          select address
+        {selectedAddress == null   ? 'select address' : 'change address'}
         </button>
         </div>
         <div className="bg-white w-full text-xs px-2 py-4 ">
@@ -268,11 +200,11 @@ function CheckoutPage({user_id}) {
                   
                   <button className={`capitalize w-[90%] h-[48px] rounded-md text-white bg-yellow-500 block mt-4 m-auto hover:bg-yellow-400 transition-all delay-100 ease-in ${selectedAddress == null  ? 'opacity-50 hover:cursor-not-allowed' : 'popacity-0'}`}  
                   onClick={() => {
-          handleFlutterPayment({
-            callback: (response) => {
-               console.log(response);
-               router.replace('/orders')
-                closePaymentModal() // this will close the modal programmatically
+                  handleFlutterPayment({
+                  callback: (response) => {
+                  console.log(response);
+                  router.replace('/account/orders')
+                  closePaymentModal() // this will close the modal programmatically
             },
             onClose: () => {},
           });

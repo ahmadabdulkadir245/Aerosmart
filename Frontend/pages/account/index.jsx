@@ -11,15 +11,21 @@ import SavedProducts from '../../components/SavedProducts';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import ProductSlider from '../../components/ProductSlider';
-import { getUserIDFromCookie } from '../../utils/cookie';
+import { getAuthTokenFromCookie, getUserIDFromCookie } from '../../utils/cookie';
 import Loading from '../../components/Loading';
+import { selectedUser } from '../../slices/userSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { FetchUser } from '../../slices/userAction';
+import { fetchProducts } from '../../slices/productsAction';
+import { selectedProducts } from '../../slices/productsSlice';
 
-function Account({products, user_id}) {
-  const [selected, setSelected] = useState('account')
+function Account({ user_id}) {
   const router = useRouter()
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
-
+  const user = useSelector(selectedUser);
+  const products = useSelector(selectedProducts);
+  const [selected, setSelected] = useState('account')
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
@@ -27,45 +33,13 @@ function Account({products, user_id}) {
   }, [loading])
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-
-        const graphqlQuery = {
-          query: `
-            query User($id: Int!) {
-              user(id: $id) {
-                id
-                 email
-                 password
-                 isAdmin
-                 first_name
-                 last_name
-                 isAdmin
-               }
-            }
-          `,
-          variables: {
-            id: Number(user_id)
-          },
-        };
-
-        const response = await axios.post(
-          process.env.NEXT_PUBLIC_GRAPHQL_URL,
-          graphqlQuery
-        );
-        const result = await response.data;
-        // Assuming the response.data has the format { data: { addresses: { addresses: [] } } }
-        setUser(result.data.user || null);
-        // setDefaultAddress(result.)
-        // setLoading(false);
-      } catch (error) {
-        console.error('Error fetching addresses:', error);
-        // setLoading(false);
-      }
-    };
-    fetchUsers();
-  }, [user_id]);
-
+    if (!user_id) {
+      dispatch(fetchProducts());
+      return
+    }
+    dispatch(FetchUser(user_id));
+    dispatch(fetchProducts());
+  }, [dispatch]);  
   
   if (loading) {
     return<>
@@ -121,48 +95,13 @@ function Account({products, user_id}) {
 
 export default Account
 
-
 export const getServerSideProps = async (context) => {
-  const page = 1;
-  const perPage = 15;
   const user_id = getUserIDFromCookie(context.req);
-  
-
-  try {
-    const response = await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      query: `
-        {
-          products(page: ${page}, perPage: ${perPage}) {
-            products {
-              id
-              title
-              price
-              image_url
-              category
-              quantity
-              description
-            }
-          }
-        }
-      `,
-    });
-
-    const products = response.data?.data?.products?.products || [];
-
+  const authToken = getAuthTokenFromCookie(context.req);
     return {
       props: {
-        products,
-        user_id
+        authToken,
+        user_id,
       },
     };
-  } catch (error) {
-    console.error(error);
-    return {
-      props: {
-        products: [],
-        user_id: null
-      },
-    };
-  }
 };
-

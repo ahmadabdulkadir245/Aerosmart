@@ -5,7 +5,7 @@ function OrdersCard({ total,orders,}) {
   const imageSlider = [1,2,3]
   console.log(orders)
   return (
-    <div className="">
+    <div className="text-xs">
     <div className="flex justify-between items-center bg-gray-300 p-2 rounded-t-sm mt-2 space-x-2">
         <div className="">
             <h2 className='uppercase font-semibold'>order placed</h2>
@@ -18,7 +18,7 @@ function OrdersCard({ total,orders,}) {
   </div>
         </div>
         <div className="">
-            <h2 className='uppercase font-semibold'>order id: #djfldsjfs</h2>
+            <h2 className='uppercase font-semibold'>order id: <span className='lowercase truncate'>#djfldsjfs</span></h2>
             <p>{orders.length} items</p> 
         </div>
     </div>

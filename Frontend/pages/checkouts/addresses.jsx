@@ -6,7 +6,7 @@ import Loading from '../../components/Loading';
 import { getAuthTokenFromCookie, getUserIDFromCookie } from '../../utils/cookie'
 import axios from 'axios';
 import { BiPlug, BiPlus } from 'react-icons/bi';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { selectedaddress } from '../../slices/addressSlice';
 import { fetchAddress } from '../../slices/addressAction';
 
@@ -14,81 +14,13 @@ import { fetchAddress } from '../../slices/addressAction';
 
 function CheckoutAddress({user_id}) {
   const router = useRouter()
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(true)
-  // const [addresses, setAddresses] = useState([])
   const [chosenAddress, setChosenAddress] = useState(null)
   const addresses = useSelector(selectedaddress)
-  console.log(addresses)
   useEffect(() => {
       dispatch(fetchAddress(user_id))
   }, [dispatch])
-
-  // useEffect(() => {
-  //   const fetchAddresses = async () => {
-  //     try {
-  //       const graphqlQuery = {
-  //         query: `
-  //           query FetchAddresses($user_id: Int!) {
-  //             addresses(user_id: $user_id) {
-  //               addresses {
-  //                 id
-  //                 first_name
-  //                 last_name
-  //                 address_line_1
-  //                 address_line_2
-  //                 phone_number_1
-  //                 phone_number_2
-  //                 city
-  //                 state
-  //                 is_default
-  //               }
-  //             }
-  //           }
-  //         `,
-  //         variables: {
-  //           user_id: Number(user_id)
-  //         },
-  //       };
-
-  //       const response = await axios.post(
-  //         process.env.NEXT_PUBLIC_GRAPHQL_URL,
-  //         graphqlQuery
-  //       );
-  //       const result = await response.data;
-  //       // Assuming the response.data has the format { data: { addresses: { addresses: [] } } }
-  //       setAddresses(result.data.addresses.addresses || []) ;
-  //       // setDefaultAddress(result.)
-  //       // setLoading(false);
-  //     } catch (error) {
-  //       console.error('Error fetching addresses:', error);
-  //       // setLoading(false);
-  //     }
-  //   };
-  //   fetchAddresses();
-  // }, [user_id]);
-
-  const handleDefaultAddress = async (addressId) => {
-    try {
-      await axios.post(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-        query: `
-          mutation SetDefaultAddress($user_id: Int, $address_id: Int) {
-            setDefaultAddress(user_id: $user_id, address_id: $address_id)
-          }
-        `,
-        variables: {
-          user_id: Number(user_id),
-          address_id: Number(addressId),
-        },
-      });
-
-      // Update the defaultAddress state
-      setDefaultAddress(addressId);
-    } catch (error) {
-      console.error("Error setting default address:", error);
-    }
-  };
-
-
   const selectAddress = (event) => {
     const id = event.target.value
     const selectedAddress = addresses.filter(address => address.id == id)
@@ -97,7 +29,6 @@ function CheckoutAddress({user_id}) {
 
   const submitAddress = () => {
     if(chosenAddress == null) return
-
     router.push(`/checkouts?address_id=${chosenAddress[0].id}`)
   }
   

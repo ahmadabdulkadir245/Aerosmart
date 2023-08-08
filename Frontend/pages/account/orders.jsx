@@ -14,7 +14,6 @@ function Orders({products}) {
   const [selected, setSelected] = useState('orders')
   const router = useRouter()
   const [loading, setLoading] = useState(true)
-
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
