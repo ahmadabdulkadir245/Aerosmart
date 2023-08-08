@@ -10,7 +10,6 @@ import DesktopCart from "../components/DesktopCart";
 import ProductSlider from "../components/ProductSlider";
 import { useEffect, useState } from "react";
 import Loading from "../components/Loading";
-import { removeFromCart } from "../utils/cartFuncitions";
 import { getAuthTokenFromCookie, getUserIDFromCookie } from "../utils/cookie";
 import { selectCartTotal, selectedCartItems } from "../slices/cartItemSlice";
 import { fetchCart } from "../slices/cartAction";
@@ -22,29 +21,18 @@ import { fetchProducts } from "../slices/productsAction";
 function Cart({  user_id, authToken}) {
   const router = useRouter()
   const dispatch = useDispatch()
-  let cartItems = []
   const cartTotal = useSelector(selectCartTotal)
   const cartProducts = useSelector(selectedCartItems)
   useEffect(() => {
-    if(user_id == null) return;
+    if(!authToken) return;
       dispatch(fetchCart(user_id))
-  }, [dispatch])
+  }, [dispatch, authToken, user_id])
 
   const products = useSelector(selectedProducts);
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const addProductToCart = () => {
-    const Product = {
-      id,
-      title,
-      price,
-      description,
-      image_url,
-    };
-    dispatch(addToCart(Product));
-  };
   
   const checkoutHandler =  () => {
     if(authToken) {

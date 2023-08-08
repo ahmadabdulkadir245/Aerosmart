@@ -34,15 +34,15 @@ const titilliumWeb = Titillium_Web({
 })
 
 
-function MyApp({ Component, pageProps, user_id }) {
+function MyApp({ Component, pageProps, user_id, authToken }) {
   useEffect(() => {
-    if (user_id) {
+    if (user_id || authToken) {
       store.dispatch(fetchCart(user_id));
     }
-  }, [user_id]);
+  }, [user_id, authToken]);
 
   return (
-    <main>
+    <main className={`font-primary ${play.variable} ${changa.variable} ${poppins.variable}  ${titilliumWeb.variable}`}>
       <Provider store={store}>
         <RecoilRoot>
           <AuthContextProvider>
@@ -56,7 +56,8 @@ function MyApp({ Component, pageProps, user_id }) {
 
 MyApp.getInitialProps = async ({ ctx }) => {
   const user_id = getUserIDFromCookie({ headers: { cookie: ctx.req.headers.cookie } });
-  return { user_id };
+  const authToken = getAuthTokenFromCookie({ headers: { cookie: ctx.req.headers.cookies} });
+  return { user_id, authToken };
 };
 
 export default MyApp;
