@@ -21,21 +21,12 @@ const ordersSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    addToOrder(state, action) {
-        const productId = action.payload.id;
-        const existingCartItem = state.orders.find(
-          (order) => order.id === productId
-        );
-  
-        if (existingCartItem) {
-          existingCartItem.cart_quantity++;
-        } else {
+    addToOrders(state, action) {
           state.orders.unshift(
             action.payload
             );
-        }
       },
-      removeFromOrder: (state, action) => {
+      removeFromOrders: (state, action) => {
         const index = state.orders.findIndex(order => order.id == action.payload.id)
         let newCart = [...state.orders];
      if (index >= 0) {
@@ -52,19 +43,19 @@ const ordersSlice = createSlice({
         const { prodId} = action.payload
         return state.orders.find(order => order.id === prodId)
       },
-    emptyCart(state) {
+    emptyOrders(state) {
       state.orders = [];
     },
   },
 });
 
-export const { fetchOrderStart, fetchOrderSuccess, fetchOrderFailure, addToOrder, removeFromOrder, emptyCart, orderExist } = ordersSlice.actions;
+export const { fetchOrderStart, fetchOrderSuccess, fetchOrderFailure, addToOrders, removeFromOrders, emptyOrders, ordersExist } = ordersSlice.actions;
 
 export default ordersSlice.reducer;
 
 export const selectedOrderItems = (state) => state.order.orders;
 
-// export const orderExist = (state) => state.order.orders.find()
+// export const ordersExist = (state) => state.order.orders.find()
 
 export const selectedOrderlength= (state) => state.order.orders.length;
 

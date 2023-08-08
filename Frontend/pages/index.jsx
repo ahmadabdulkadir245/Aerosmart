@@ -17,7 +17,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { getAuthTokenFromCookie, getUserIDFromCookie } from '../utils/cookie'
 import { fetchProducts } from '../slices/productsAction'
 import { selectedProducts } from '../slices/productsSlice'
-import { fetchCart } from '../slices/cartAction'
 
 
 
@@ -27,7 +26,6 @@ export default function Home({authToken, user_id}) {
   const products = useSelector(selectedProducts);
   useEffect(() => {
     dispatch(fetchProducts());
-    dispatch(fetchCart(user_id))
   }, [dispatch]);
   
   useEffect(() => {

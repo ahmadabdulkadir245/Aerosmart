@@ -1,15 +1,15 @@
 import { RecoilRoot } from 'recoil';
-import { Provider, useDispatch } from "react-redux";
+import { Provider, useDispatch } from "react-redux"; // Import Provider from react-redux
 import { store } from "../redux-store/store";
 import Header from '../components/Header'
 import '../styles/globals.css'
 import Footer from '../components/Footer';
 import { AuthContextProvider } from '../context/authContext';
-
-
 import {  Changa, Play, Poppins, Titillium_Web } from '@next/font/google';
-import { CartContextProvider } from '../context/cartContext';
 import { fetchCartItems } from '../slices/cartItemsSlice';
+import { getAuthTokenFromCookie, getUserIDFromCookie } from '../utils/cookie';
+import { useEffect } from 'react';
+import { fetchCart } from '../slices/cartAction';
 
 
 const play = Play({
@@ -34,30 +34,32 @@ const titilliumWeb = Titillium_Web({
 })
 
 
-function MyApp({ Component, pageProps  }) {
+function MyApp({ Component, pageProps, user_id }) {
+  useEffect(() => {
+    if (user_id) {
+      store.dispatch(fetchCart(user_id));
+    }
+  }, [user_id]);
 
   return (
-    <main className={`font-primary ${play.variable} ${changa.variable} ${poppins.variable}  ${titilliumWeb.variable}`}>
-    <Provider store={store}>
-    <RecoilRoot>
-      {/* <Header /> */}
-      <AuthContextProvider>
-        <CartContextProvider>
-      <Component {...pageProps} />
-        </CartContextProvider>
-      </AuthContextProvider>
-    </RecoilRoot>
-    {/* <Footer /> */}
-    </Provider>
+    <main>
+      <Provider store={store}>
+        <RecoilRoot>
+          <AuthContextProvider>
+              <Component {...pageProps} />
+          </AuthContextProvider>
+        </RecoilRoot>
+      </Provider>
     </main>
   );
 }
 
+MyApp.getInitialProps = async ({ ctx }) => {
+  const user_id = getUserIDFromCookie({ headers: { cookie: ctx.req.headers.cookie } });
+  return { user_id };
+};
 
-
-export default MyApp
-
-
+export default MyApp;
 
 
 

@@ -4,11 +4,8 @@ import { useDispatch } from "react-redux";
 import { minusFromCart, addToCart, removeFromCart } from "../slices/cartSlice";
 import { AiOutlineDelete, AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import { TbCurrencyNaira } from 'react-icons/tb';
-import { CartContext } from '../context/cartContext';
-import { addQuantity, deleteCartItem, reduceQuantity } from '../slices/cartItemsSlice';
 import axios from 'axios';
-import { addProductToCart, removeProductFromCart, updateProductQuantity } from '../slices/cartAction';
-
+import {  removeProductFromCart, updateProductQuantity } from '../slices/cartAction';
 function DesktopCart({ id, title, productQty, price, description, image_url, user_id, authToken, cart_id }) {
     const dispatch = useDispatch();
 
@@ -102,7 +99,7 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
           onClick={handleRemoveFromCart}
         >
           <AiOutlineDelete className='' /> 
-      </div>
+             </div>
             </div>
         </div>
 
@@ -113,3 +110,5 @@ function DesktopCart({ id, title, productQty, price, description, image_url, use
 }
 
 export default DesktopCart
+
+
