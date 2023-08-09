@@ -131,7 +131,7 @@ function AccountDetails({ user_id, setLoading }) {
                 className="border-[1px] rounded-lg border-gray-300 bg-gray-200 cursor-not-allowed outline-none px-4 py-[12px] w-full m-auto flex my-3 lg:my-3"
                 placeholder="useremail@gmail.com"
                 disabled
-                value={user.email}
+                value={user?.email}
                 required
               />
             </form>
