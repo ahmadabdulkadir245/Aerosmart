@@ -56,7 +56,6 @@ function AccountDetails({ user_id, setLoading }) {
         first_name: user?.first_name,
         last_name: user?.last_name,
       });
-      dispatch(FetchUser(user_id));
       setMessage({
         success: "Username updated successfully",
         error: null,
