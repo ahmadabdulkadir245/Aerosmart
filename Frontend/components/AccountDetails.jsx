@@ -48,7 +48,7 @@ function AccountDetails({ user_id, setLoading }) {
 
   const handleEditUserName = async () => {
     if (!user_id) return;
-    if(inputDisabled == true)
+    if(inputDisabled == true) return;
     setInputDisabled(true)
     try {
       const response = await axios.post("/api/editUserName", {
