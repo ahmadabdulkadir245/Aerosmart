@@ -52,8 +52,8 @@ function AccountDetails({ user_id, setLoading }) {
     try {
       const response = await axios.post("/api/editUserName", {
         user_id: Number(user_id),
-        first_name: user.first_name,
-        last_name: user.last_name,
+        first_name: user?.first_name,
+        last_name: user?.last_name,
       });
       dispatch(FetchUser(user_id));
       setUser(users);
@@ -109,7 +109,7 @@ function AccountDetails({ user_id, setLoading }) {
                 }`}
                 required
                 disabled={inputDisabled}
-                value={user.first_name}
+                value={user?.first_name}
                 onChange={handleChange}
                 name="first_name"
                 placeholder="Enter first name"
@@ -122,7 +122,7 @@ function AccountDetails({ user_id, setLoading }) {
                 placeholder="Enter last name"
                 required
                 disabled={inputDisabled}
-                value={user.last_name}
+                value={user?.last_name}
                 onChange={handleChange}
                 name="last_name"
               />
