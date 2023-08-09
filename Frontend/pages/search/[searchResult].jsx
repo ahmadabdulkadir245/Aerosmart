@@ -16,10 +16,11 @@ import ProductSlider from "../../components/ProductSlider"
 import axios from 'axios';
 import { selectedProducts } from "../../slices/productsSlice"
 import { fetchProducts } from "../../slices/productsAction"
+import { getAuthTokenFromCookie, getUserIDFromCookie } from "../../utils/cookie"
 
 
 
-function SearchResultPage({}) {
+function SearchResultPage({user_id, authToken}) {
     const router = useRouter()
     const [totalPages, setTotalPages] = useState(1)
     const [page, setPage] = useState(0)
@@ -143,6 +144,8 @@ function SearchResultPage({}) {
        price={price}
        description={description}
        image_url={image_url}
+       user_id={user_id}
+       authToken={authToken}
        />
        ))}
        </div> 
@@ -197,3 +200,13 @@ function SearchResultPage({}) {
 export default SearchResultPage 
 
 
+export const getServerSideProps = async (context) => {
+  const user_id = getUserIDFromCookie(context.req);
+  const authToken = getAuthTokenFromCookie(context.req);
+    return {
+      props: {
+        authToken,
+        user_id,
+      },
+    };
+};
