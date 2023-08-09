@@ -48,6 +48,8 @@ function AccountDetails({ user_id, setLoading }) {
 
   const handleEditUserName = async () => {
     if (!user_id) return;
+    if(inputDisabled == true)
+    setInputDisabled(true)
     try {
       const response = await axios.post("/api/editUserName", {
         user_id: Number(user_id),
@@ -56,7 +58,6 @@ function AccountDetails({ user_id, setLoading }) {
       });
       dispatch(FetchUser(user_id));
       setUser(users);
-      setInputDisabled(true)
       setMessage({
         success: "Username updated successfully",
         error: null,
