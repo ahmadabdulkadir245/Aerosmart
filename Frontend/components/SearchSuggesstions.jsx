@@ -1,16 +1,20 @@
 import { useState } from "react";
 import { useEffect } from "react";
-import { productsRetrieved } from "../slices/productSlice";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Image from "next/legacy/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { fetchProducts } from "../slices/productsAction";
+import { selectedProducts } from "../slices/productsSlice";
 
 function SearchSuggesstions({searchWord, setSearchWord,pressToSearchHandler}) {
   // const [products, setProducts] = useState([])
   const router = useRouter()
-  const recievedProducts = useSelector(productsRetrieved)
-const products = recievedProducts
+  const dispatch = useDispatch()
+  const products = useSelector(selectedProducts);
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
  
   let filteredCategories = []
   let filteredProducts = []

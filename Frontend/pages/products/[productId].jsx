@@ -25,13 +25,32 @@ function Product({ user_id}) {
   const dispatch = useDispatch()
   const products = useSelector(selectedProducts);
   const wishlists = useSelector(selectedWishlistItems)
-  // const wishlistExist = wishlists.find(wishlist => wishlist.id == prodId)
   const [wishlistExist, setWishlistExist] = useState(false)
   const product = products.find(product => product.id == prodId)
 
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch]);
+
+    const fetchWishlist = async () => {
+      try {
+        if (!wishlists.length) {
+           dispatch(FetchWishlist(user_id));
+        }
+      } catch (error) {
+        console.error('An error occurred while fetching wishlist:', error);
+      }
+    };
+
+    const updateWishlistExist = () => {
+      const foundWishlist = wishlists.find(wishlist => wishlist.id == prodId);
+      setWishlistExist(!!foundWishlist);
+    };
+
+    fetchWishlist();
+    updateWishlistExist(); // Update the state after fetching the wishlist
+  }, [dispatch, prodId, user_id, wishlists]);
+
+
   
   const handleAddToCart = async () => {
     if(user_id == null) {
@@ -65,7 +84,7 @@ function Product({ user_id}) {
 
         const handleAddToWishlist = async () => {
           if(user_id == null) return
-          setWishlistExist(!wishlistExist)
+          setWishlistExist(true)
           const Product = {
             id: product?.id,
             title: product?.title,
@@ -84,7 +103,7 @@ function Product({ user_id}) {
 
         const handleRemoveFromWishlist = async () => {
           if (!product?.id) return;
-          setWishlistExist(!wishlistExist)
+          setWishlistExist(false)
           dispatch(removeProductFromWishlist({ id: product?.id })); // Assuming `id` represents cart_item_id
           try {
             const response = await axios.post('/api/deleteFromWishlist', {
@@ -100,9 +119,16 @@ function Product({ user_id}) {
           }
         };  
 
-        useEffect(() => {
-          dispatch(FetchWishlist(user_id))
-          }, [dispatch,wishlistExist]);
+        // const wishlist = wishlists.find(wishlist => wishlist.id == prodId)
+        // useEffect(() => {
+        //   dispatch(FetchWishlist(user_id))
+        //     console.log(wishlist)
+        //     if(wishlist) {
+        //       setWishlistExist(true)
+        //     }else{
+        //       setWishlistExist(false)
+        //     }
+        //   }, [dispatch,wishlistExist, prodId]);
   return (
     <>
     <Header />

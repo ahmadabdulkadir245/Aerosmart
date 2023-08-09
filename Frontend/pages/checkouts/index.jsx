@@ -58,7 +58,7 @@ function CheckoutPage({user_id}) {
     tx_ref: Date.now(),
     amount: orderTotal + deliverFee,
     currency: 'NGN',
-    payment_options: 'card,mobilemoney,ussd',
+    payment_options: 'card,mobilemoney',
     customer: {
       email: user?.email,
        phone_number: user?.phone_number_1,
