@@ -49,6 +49,7 @@ function AccountDetails({ user_id, setLoading }) {
   const handleEditUserName = async () => {
     if (!user_id) return;
     setLoading(true);
+    setUser(users);
     try {
       const response = await axios.post("/api/editUserName", {
         user_id: Number(user_id),
@@ -56,7 +57,6 @@ function AccountDetails({ user_id, setLoading }) {
         last_name: user?.last_name,
       });
       dispatch(FetchUser(user_id));
-      setUser(users);
       setMessage({
         success: "Username updated successfully",
         error: null,
