@@ -49,21 +49,22 @@ function AccountDetails({ user_id, setLoading }) {
   const handleEditUserName = async () => {
     if (!user_id) return;
     setLoading(true);
-    setUser(users);
     try {
       const response = await axios.post("/api/editUserName", {
         user_id: Number(user_id),
         first_name: user?.first_name,
         last_name: user?.last_name,
       });
-      setMessage({
-        success: "Username updated successfully",
-        error: null,
-      });
-      setTimeout(() => {
-        setMessage({ success: null, error: null });
-      }, 4000);
       if (response.data.success) {
+        setUser(users)
+        console.log(user)
+        setMessage({
+          success: "Username updated successfully",
+          error: null,
+        });
+        setTimeout(() => {
+          setMessage({ success: null, error: null });
+        }, 4000);
         console.log("Username updated successfully");
       } else {
         console.error("Failed to update username");
