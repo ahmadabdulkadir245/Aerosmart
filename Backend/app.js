@@ -122,14 +122,14 @@ app.post('/ulpoad-banner-cloudinary', cloudinaryBannerUpload.single('image'), (r
 
 app.post('/upload-product-cloudinary', cloudinaryProductUpload.single('image'), (req, res) => {
   // Get file details from multer
-  const { originalname, mimetype, size, path } = req.file;
+  const { originalname, size, path } = req.file;
   
   if (!req.file) {
     console.log('Request file does not exist');
     return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  // Upload file to Cloudinary with optimization
+  // Upload only webp format file to Cloudinary with optimization
   cloudinary.uploader.upload(path, {
     public_id: originalname,
     format: 'webp',
