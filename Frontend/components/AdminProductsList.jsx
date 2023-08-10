@@ -7,7 +7,7 @@ import { useEffect } from "react"
 import { useState } from "react"
 import Loading from "./Loading"
 
-function AdminProductsList({id, title, image_url, category, price, description, quantity, setLoading}) {
+function AdminProductsList({id, title, image_url, category, price, description, quantity, brand, setLoading}) {
   const router = useRouter()
   const deleteHandler = (id, e) => {
     e.preventDefault()
@@ -62,14 +62,14 @@ function AdminProductsList({id, title, image_url, category, price, description, 
         </div>
 
         <div className="hidden lg:block">
-        <Link href={{ pathname: `/admin/add-product`, query: { prodId: id, title: title, oldImage: image_url, category: category, price: price, description: description, quantity: quantity }}}> 
+        <Link href={{ pathname: `/admin/add-product`, query: { prodId: id, title: title, oldImage: image_url, category: category, price: price, description: description, quantity: quantity, brand: brand }}}> 
         <button className="capitalize w-[90%] h-[38px] rounded-sm  border-[1px]  bg-transparent  m-auto tracking-wide cursor-pointer hover:bg-green-600 hover:text-white transition-all duration-300 ease-in-out">EDIT</button>
         </Link>
         </div>
 
         <div className="space-y-3 lg:space-y-0">
         <div className="lg:hidden">
-        <Link href={{ pathname: `/admin/add-product`, query: { prodId: id, title: title, oldImage: image_url, category: category, price: price, description: description, quantity: quantity }}}> 
+        <Link href={{ pathname: `/admin/add-product`, query: { prodId: id, title: title, oldImage: image_url, category: category, price: price, description: description, quantity: quantity, brand: brand }}}> 
         <button className="capitalize w-[90%] h-[38px] rounded-sm  border-[1px]  bg-transparent  m-auto tracking-wide cursor-pointer hover:bg-green-600 hover:text-white transition-all duration-300 ease-in-out">EDIT</button>
         </Link>
         </div>

@@ -6,7 +6,7 @@ function DesktopCategpry() {
     const categories = [
         {
         id: 1,
-        category: 'agriculture material',
+        category: 'agriculture materials',
         Image: 'https://images.pexels.com/photos/2933243/pexels-photo-2933243.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
         items: 7
         },
@@ -48,7 +48,7 @@ function DesktopCategpry() {
         },
         {
         id: 7,
-        category: 'pulmbing',
+        category: 'plumbing',
         Image: 'https://images.pexels.com/photos/8793484/pexels-photo-8793484.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1',
         items: 20
         },
@@ -87,17 +87,19 @@ function DesktopCategpry() {
         </div>
 
         {categories.map(category => (
-            <div className="bg-white" key={category.id} onClick={() => router.push(`/search/${category.category}`)}>
-                <div className='lg:flex flex-row-reverse justify-between items-center text-xs cursor-pointer'>
-                    <div className="relative bg-gray-300 w-full h-[80px] lg:w-[120px] lg:h-[80px] rounded-md overflow-hidden">
+            <div className="bg-white grid grid-cols-1 grid-flow-row-dense  lg:grid-cols-4 xl:grid-cols-4   lg:gap-y-6 lg:gap-x-0 max-w-7xl" key={category.id} onClick={() => router.push(`/search/${category.category}`)}>
+                <div className='col-span-1 lg:col-span-4 '>
+                    <div className="lg:flex  space-x-4 items-center cursor-pointer">
+                    <div className="relative bg-gray-300 w-full h-[80px] lg:w-[120px] md:h-[120px] lg:h-[80px] rounded-md overflow-hidden">
                         <Image src={category.Image} alt={category.category}  objectFit='cover' layout='fill' />
                     </div>
-                    <div className='mt-1 lg:mt-0'>
+                    <div className='mt-1 lg:mt-0 '>
                     <p className='text-xs lg:text-sm tracking-wide capitalize mb-[2px]'>{category.category}</p>
-                    <p className="text-gray-400 hidden lg:block">
+                    <p className="text-gray-400 hidden lg:block text-xs">
                         {category.items} items
                     </p>
                         </div>  
+                        </div>
                 </div>
             </div>
         ))}

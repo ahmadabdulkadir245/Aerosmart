@@ -39,7 +39,7 @@ import { getAuthTokenFromCookie, getUserIDFromCookie } from "../../utils/cookie"
 const AddProduct = ({user_id, authToken}) => { 
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const {prodId,  title, oldImage, category, price, description, quantity} = router.query;
+  const {prodId,  title, oldImage, category, price, description, quantity, brand} = router.query;
   const [isUpdate, setIsUpdate] = useState(false)
   useEffect(() => {
     setTimeout(() => {
@@ -52,6 +52,7 @@ const AddProduct = ({user_id, authToken}) => {
         title: title,
         price: price,
         category: category,
+        brand: brand || '',
         quantity: Number(quantity),
         image_url: oldImage,
         description: description
@@ -66,6 +67,7 @@ const AddProduct = ({user_id, authToken}) => {
   const [productData, setProductData] = useState({
     title:  "",
     price:  "",
+    brand: "",
     category:  "",
     quantity:  "",
     image_url:  "",
@@ -78,8 +80,6 @@ const AddProduct = ({user_id, authToken}) => {
   const [success, setSuccess] = useState(false)
   const [image, setImage] = useState(null)
   const [content, setContent] = useState('');
-
-
 
   const handleFileInputChange = (event) => {
     setImage(event.target.files[0]);
@@ -109,6 +109,7 @@ const AddProduct = ({user_id, authToken}) => {
         setProductData({
           title: '',
           price: '',
+          brand: "",
           quantity: '',
           category: '',
         });
@@ -137,9 +138,6 @@ const AddProduct = ({user_id, authToken}) => {
     }
   };
   
-  
-
-  
   const addProductHandler = (e) => {
     if(user_id == null) return
     e.preventDefault()
@@ -160,8 +158,8 @@ const AddProduct = ({user_id, authToken}) => {
 
     let graphqlQuery = {
     query: `
-    mutation CreateProduct($title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int, $user_id: Int) {
-      createProduct(productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity, user_id: $user_id}) {
+    mutation CreateProduct($title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int,brand: String, $user_id: Int) {
+      createProduct(productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity, brand: $brand, user_id: $user_id}) {
         title
         price
         quantity
@@ -197,6 +195,7 @@ const AddProduct = ({user_id, authToken}) => {
       setProductData({
         title: "",
         price: "",
+        brand: "",
         quantity: "",
         category: ""
       })
@@ -239,8 +238,8 @@ const updateDataHandler = () => {
     .then(image => {
       let graphqlQuery = {
         query: `
-        mutation UpdateProduct($id: Int!,$title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int) {
-          updateProduct(id: $id, productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity}) {
+        mutation UpdateProduct($id: Int!,$title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int, brand: String, user_id: Int) {
+          updateProduct(id: $id, productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity, brand: $brand,, user_id: $user_id}) {
             id
             title
             price
@@ -275,6 +274,7 @@ const updateDataHandler = () => {
           setProductData({
             title: "",
             price: "",
+            brand: "",
             quantity: "",
             category: ""
           })
@@ -299,8 +299,8 @@ const updateDataHandler = () => {
   else {
     let graphqlQuery = {
       query: `
-      mutation UpdateProduct($id: Int!,$title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int) {
-        updateProduct(id: $id, productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity}) {
+      mutation UpdateProduct($id: Int!,$title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int, brand: String, user_id: Int) {
+        updateProduct(id: $id, productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity, brand: $brand, user_id: $user_id}) {
           id
           title
           price
@@ -335,6 +335,7 @@ const updateDataHandler = () => {
         setProductData({
           title: "",
           price: "",
+          brand: "",
           quantity: "",
           category: ""
         })
@@ -370,6 +371,7 @@ const updateDataHandler = () => {
       return <Loading/>
     }
 
+
   return (
     <>
     <Header/>
@@ -393,17 +395,26 @@ const updateDataHandler = () => {
   )}
           <input
         type='text'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex mb-5 lg:my-5'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-full  m-auto flex mb-5 lg:my-5'
         placeholder='product name'
         required
         name="title"
         value={productData.title}
         onChange={productInputHandler.bind(this, 'title')}
       />
+        <input
+        type='text'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-full  m-auto flex mb-5 lg:my-5'
+        placeholder='product brand'
+        required
+        name="brand"
+        value={productData.brand}
+        onChange={productInputHandler.bind(this, 'brand')}
+      />
       <div className="flex space-x-4 mb-5">
       <input
         type='number'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-[50%]  m-auto flex  lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-[50%]  m-auto flex  lg:my-8'
         placeholder='price'
         name="price"
         required
@@ -412,7 +423,7 @@ const updateDataHandler = () => {
       />
       <input
         type='number'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-[50%]  m-auto flex  lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-[50%]  m-auto flex  lg:my-8'
         placeholder='quantity'
         name="quantity"
         required
@@ -421,19 +432,35 @@ const updateDataHandler = () => {
       />
       </div>
 
-      <input
+
+
+      <select
         type='text'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex mb-5 lg:my-5'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-full  m-auto flex mb-5 lg:my-5'
         placeholder='product category'
         required
         name="category"
         value={productData.category}
         onChange={productInputHandler.bind(this, 'category')}
-      />
+      >
+          <option>select category</option>
+          <option>agriculture materials</option>
+          <option>bricks, blocks & kerbs</option>
+          <option>building materials</option>
+          <option>concrete, cement & stones</option>
+          <option>doors</option>
+          <option>electrical items</option>
+          <option>paint</option>
+          <option>pulmbing</option>
+           <option>roof covering</option>
+          <option>tiles</option>
+          <option>windows</option>
+         <option>wood</option>
+          </select>
 
       <input
         type='file'
-        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex my-6 lg:my-8'
+        className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 focus:bg-gray-100 w-full  m-auto flex my-6 lg:my-8'
         placeholder='image url'
         name="image_url"
         required
@@ -467,8 +494,8 @@ export const getServerSideProps = async (context) => {
   const authToken = getAuthTokenFromCookie(context.req);
     return {
       props: {
-        authToken,
         user_id,
+        authToken,
       },
     };
 };

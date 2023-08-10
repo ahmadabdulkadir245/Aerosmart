@@ -90,7 +90,7 @@ const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
     </div>
 
     <div className="grid grid-cols-4 lg:grid-cols-7 gap-x-3 items-center uppercase  text-gray-700 text-xs font-semibold mt-3">
-      {products.map(({ id, title, price, description, category, image_url,quantity }) => (
+      {products.map(({ id, title, price, description, category, image_url,quantity, brand}) => (
     <AdminProductsList
         key={id}
         id={id}
@@ -100,6 +100,7 @@ const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
         category={category}
         quantity={quantity}
         image_url={image_url}
+        brand={brand}
         setLoading={setLoading}
     />
       ))}
