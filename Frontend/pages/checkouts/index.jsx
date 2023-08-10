@@ -1,10 +1,10 @@
+import axios from 'axios';
 import Header from '../../components/Header'
 import Checkout from '../../components/Checkout'
 import Footer from '../../components/Footer'
 import { useRouter } from 'next/router';
 import { useDispatch, useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { TbCurrencyNaira } from 'react-icons/tb';
 import { useFlutterwave, closePaymentModal } from 'flutterwave-react-v3';
 import Loading from '../../components/Loading';

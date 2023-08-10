@@ -24,7 +24,6 @@ export const orderSlice = createSlice({
         );
       }
       state.orderItems = newOrder;
-
     },
   },
 });

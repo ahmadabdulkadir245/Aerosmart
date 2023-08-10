@@ -5,57 +5,59 @@ import AdminProductsList from '../../components/AdminProductsList'
 import ReactPaginate from "react-paginate";
 import { useEffect } from 'react';
 import Loading from '../../components/Loading';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectedProducts } from '../../slices/productsSlice';
+import { fetchProducts } from '../../slices/productsAction';
+import { getAuthTokenFromCookie, getUserIDFromCookie } from '../../utils/cookie';
 
-let globalPage = 1
-
-function AminProducts() {
-  const [products, setProducts] = useState([])
-  const [totalPages, setTotalPages] = useState(1)
-  const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
-  const perPage = 3
+function AminProducts({authToken, user_id}) {
+  const dispatch = useDispatch()
+  const recievedProducts = useSelector(selectedProducts);
   useEffect(() => {
-    const graphqlQuery = {
-      query: `
-      {
-        products(page: ${page}, perPage: ${perPage}) {
-          products{
-            id
-            title
-            price
-            quantity
-            category
-            image_url
-            description
-          }
-          totalPages
-        }
+    dispatch(fetchProducts());
+  }, [dispatch]);
+  const [loading, setLoading] = useState(true)
+  const [totalPages, setTotalPages] = useState(1) 
+  const [page, setPage] = useState(0)
+  const perPages = {
+    sm: 3,
+    md: 9,
+    lg: 15
+  };
+  const [perPage, setPerPage] = useState(perPages.sm);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const { innerWidth } = window;
+      let newPerPage = perPages.sm;
+
+      if (innerWidth >= 768 && innerWidth < 1024) {
+        newPerPage = perPages.md;
+      } else if (innerWidth >= 1024) {
+        newPerPage = perPages.lg;
       }
-      `
+      setPerPage(newPerPage);
     };
-   fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(graphqlQuery)
-    })
-      .then(res => {  
-        return res.json();
-      })
-      .then(productData => {
-        const recievedData = productData.data?.products?.products || []
-        recievedData.reverse()
-        const productPages = productData.data?.products.totalPages
-        setProducts(recievedData)
-        setTotalPages(productPages)
-      })
-  }, [page])
+
+    handleResize();
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [perPages.lg, perPages.sm, perPages.md]);
+const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
+
+  useEffect(() => {
+    setTotalPages(Math.ceil(recievedProducts.length / perPage))
+  }, [recievedProducts, perPage])
+  
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false)
-    }, 3000)
+    }, 300)
   }, [loading])
 
   if(loading) {
@@ -110,7 +112,7 @@ function AminProducts() {
           nextLabel='NEXT'
           pageRangeDisplayed={1}
           pageCount={totalPages}
-          onPageChange={({ selected }) => setPage(selected + 1)}
+          onPageChange={({ selected }) => setPage(selected)}
           renderOnZeroPageCount={null}
           previousClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer  text-xs '
           nextClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer text-xs'
@@ -128,46 +130,12 @@ function AminProducts() {
 export default AminProducts
 
 export const getServerSideProps = async (context) => {
-    // const page = 1
-    const perPage = 2
-    const graphqlQuery = {
-      query: `
-      {
-        products(page: ${globalPage}, perPage: ${perPage}) {
-          products{
-            id
-            title
-            price
-            category
-            quantity
-            image_url
-            description
-          }
-          totalPages
-        }
-      }
-      `
+  const user_id = getUserIDFromCookie(context.req);
+  const authToken = getAuthTokenFromCookie(context.req);
+    return {
+      props: {
+        authToken,
+        user_id,
+      },
     };
-     const result = await fetch(process.env.NEXT_PUBLIC_GRAPHQL_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(graphqlQuery)
-      })
-        .then(res => {  
-          return res.json();
-        })
-        .then(resData => {
-          return resData
-        })
-        .catch(err => console.log(err))
-       
-        const data = await result
-      return {
-        props: {
-          products: data?.data?.products?.products || [],
-          totalPages: data?.data?.products?.totalPages || 1
-        }
-      }
-    }
+};

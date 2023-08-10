@@ -31,14 +31,10 @@ const ProductFeed = ({authToken, user_id}) => {
       } else if (innerWidth >= 1024) {
         newPerPage = perPages.lg;
       }
-
       setPerPage(newPerPage);
     };
-
     handleResize();
-
     window.addEventListener('resize', handleResize);
-
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -49,7 +45,6 @@ const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
     setTotalPages(Math.ceil(recievedProducts.length / perPage))
   }, [recievedProducts, perPage])
   
-
   return (
     <>
     <div
@@ -77,7 +72,7 @@ const products = recievedProducts.slice(perPage * page, perPage * (page + 1))
           nextLabel='NEXT'
           pageRangeDisplayed={1}
           pageCount={totalPages}
-          onPageChange={({ selected }) => setPage(selected )}
+          onPageChange={({ selected }) => setPage(selected)}
           renderOnZeroPageCount={null}
           previousClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer  text-xs hover:bg-gray-300 transition duration-300 ease-in w-full h-full'
           nextClassName='flex items-center justify-center capitalize   w-[70px] h-[30px] rounded-sm  border-[1px]  bg-transparent   tracking-wide cursor-pointer text-xs hover:bg-gray-300 transition duration-300 ease-in'

@@ -19,6 +19,7 @@ module.exports = buildSchema(`
         cart_quantity: Int
         wishlist_id: Int
         likes: Int
+        user_id: Int
         createdAt: String!
         updatedAt: String!
     }

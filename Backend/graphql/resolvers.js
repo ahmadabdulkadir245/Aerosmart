@@ -153,7 +153,7 @@ return {
 
     createProduct: async function({ productInput }, req) {
 
-        const product = new Product(null, productInput.title, productInput.image_url, productInput.description, productInput.price, productInput.category, productInput.quantity, 1);
+        const product = new Product(null, productInput.title, productInput.image_url, productInput.description, productInput.price, productInput.category, productInput.quantity, productInput.user_id);
 
          await product.save()
     
@@ -165,7 +165,7 @@ return {
           description: product.description,
           category: product.category,
           quantity: product.quantity,
-          user_id: 1,
+          user_id: product.user_id,
           // createdAt: createdProduct.createdAt.toISOString(),
           // updatedAt: createdProduct.updatedAt.toISOString()
         };

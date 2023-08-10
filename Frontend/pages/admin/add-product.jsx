@@ -32,14 +32,20 @@ const modules = {
 import 'react-quill/dist/quill.snow.css';
 import { useRouter } from "next/router";
 import Loading from "../../components/Loading";
+import { getAuthTokenFromCookie, getUserIDFromCookie } from "../../utils/cookie";
 
 
 
-const AddProduct = () => { 
+const AddProduct = ({user_id, authToken}) => { 
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const {prodId,  title, oldImage, category, price, description, quantity} = router.query;
   const [isUpdate, setIsUpdate] = useState(false)
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 300)
+  },[loading]);
   useEffect(() => {
     if(prodId) {
       setProductData({
@@ -79,7 +85,63 @@ const AddProduct = () => {
     setImage(event.target.files[0]);
   };
 
+  const handleAddProduct = async (e) => {
+    if (user_id === null) {
+      return; // Return early if user_id is null
+    }
+    e.preventDefault();
+    setLoading(true);
+  
+    try {
+      const response = await axios.post('/api/addToProduct', {
+        title: productData.title,
+        price: Number(productData.price),
+        quantity: Number(productData.quantity),
+        category: productData.category,
+        image: image,
+        description: content,
+        user_id: user_id,
+      });
+      
+      // Check if the response is successful before proceeding
+      if (response.data.success) {
+        // Reset form and state
+        setProductData({
+          title: '',
+          price: '',
+          quantity: '',
+          category: '',
+        });
+  
+        setContent('');
+        setLoading(false);
+        setMessage({
+          state: true,
+          message: 'Product Added Successfully',
+        });
+  
+        setTimeout(() => {
+          setMessage({
+            state: false,
+            message: '',
+          });
+          setSuccess(false);
+        }, 1000);
+      } else {
+        console.error('Product could not be added:', response.data.message);
+        // Handle error case, if needed
+      }
+    } catch (error) {
+      console.error('An error occurred:', error);
+      // Handle error case, if needed
+    }
+  };
+  
+  
+
+  
   const addProductHandler = (e) => {
+    if(user_id == null) return
     e.preventDefault()
     setLoading(true)
     const formData = new FormData();
@@ -98,14 +160,15 @@ const AddProduct = () => {
 
     let graphqlQuery = {
     query: `
-    mutation CreateProduct($title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int) {
-      createProduct(productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity}) {
+    mutation CreateProduct($title: String!, $price: Int!, $image_url: String!, $description: String!, $category: String, $quantity: Int, $user_id: Int) {
+      createProduct(productInput: {title: $title, price: $price, image_url: $image_url, description: $description, category: $category, quantity: $quantity, user_id: $user_id}) {
         title
         price
         quantity
         category
         image_url
         description
+        user_id
       }
     }
   `,
@@ -116,6 +179,7 @@ const AddProduct = () => {
       category: productData.category,
       image_url: image,
       description: content,
+      user_id: Number(user_id)
     }
   };
 
@@ -153,6 +217,8 @@ const AddProduct = () => {
     })
     .catch(err => console.log(err))
 }
+
+
 
 const updateDataHandler = () => {
 
@@ -315,14 +381,16 @@ const updateDataHandler = () => {
       </Head>
 
 
-    <form  className="px-[10px]">
-      <h2 className="text-center text-xl uppercase text-gray-500  my-5 [word-spacing: 10px] font-poppins">
-        {isUpdate ? 'update product' : 'add product'}
-        <div className="w-[120px] h-[1px] bg-yellow-500 m-auto"></div>
-      </h2>
-      {message.state &&
-          <p className="text-center text-xs text-green-400 mt-2 mb-1 transition-all duration-300 ease-out">{message.message} </p>
-      }
+      <form className="px-[10px]" onSubmit={isUpdate ? updateDataHandler : addProductHandler}>
+  <h2 className="text-center text-xl uppercase text-gray-500 my-5 [word-spacing: 10px] font-poppins">
+    {isUpdate ? 'Update Product' : 'Add Product'}
+    <div className="w-[120px] h-[1px] bg-yellow-500 m-auto"></div>
+  </h2>
+  {message.state && (
+    <p className="text-center text-xs text-green-400 mt-2 mb-1 transition-all duration-300 ease-out">
+      {message.message}
+    </p>
+  )}
           <input
         type='text'
         className='bg-gray-200 lg:border-[1px] rounded-lg  outline-none px-4 py-[16px] focus:ring-2 focus:border-transparent ring-green-400 w-full  m-auto flex mb-5 lg:my-5'
@@ -375,26 +443,17 @@ const updateDataHandler = () => {
 
       <div className="  font-semibold text-gray-500 h-[300px] overflow-y-scroll shadow-md border border-gray-400 rounded-md overflow-hidden">
       <QuillNoSSRWrapper modules={modules} onChange={setContent} value={content} theme="snow" 
-      // value={content}
         />
       </div>
 
-      {isUpdate ? (
-        <button
-          className='flex justify-center m-auto mt-5 lg:mt-5  bg-gray-500 w-56 rounded-full text-white  px-2 py-3 2xl:p-3 outline-none transition-all duration-300 ease-in-out hover:bg-[#ffcb05] 2xl:w-[300px] mb-20'
-          onClick={updateDataHandler}
-        >
-          Update
-        </button>
-      ) : (
-        <button type="submit"
-          className='flex justify-center m-auto mt-5 lg:mt-5  bg-yellow-400 w-56 rounded-full text-white  px-2 py-3 2xl:p-3 outline-none transition-all duration-300 ease-in-out hover:bg-yellow-500 2xl:w-[300px] mb-20'
-          onClick={addProductHandler}
-          
-        >
-          Add
-        </button>
-      )}
+      <button
+    type="submit"
+    className={`flex justify-center m-auto mt-5 lg:mt-5 bg-${isUpdate ? 'gray' : 'yellow'}-400 w-56 rounded-full text-white px-2 py-3 2xl:p-3 outline-none transition-all duration-300 ease-in-out hover:bg-${
+      isUpdate ? '[#ffcb05]' : 'yellow-500'
+    } 2xl:w-[300px] mb-20`}
+  >
+    {isUpdate ? 'Update' : 'Add'}
+  </button>
     </form>
     </div>
     </>
@@ -402,3 +461,14 @@ const updateDataHandler = () => {
 }
 
 export default AddProduct
+
+export const getServerSideProps = async (context) => {
+  const user_id = getUserIDFromCookie(context.req);
+  const authToken = getAuthTokenFromCookie(context.req);
+    return {
+      props: {
+        authToken,
+        user_id,
+      },
+    };
+};

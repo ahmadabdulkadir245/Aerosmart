@@ -120,15 +120,24 @@ app.post('/ulpoad-banner-cloudinary', cloudinaryBannerUpload.single('image'), (r
   });
 });
 
-app.post('/ulpoad-product-cloudinary', cloudinaryProductUpload.single('image'), (req, res) => {
+app.post('/upload-product-cloudinary', cloudinaryProductUpload.single('image'), (req, res) => {
   // Get file details from multer
   const { originalname, mimetype, size, path } = req.file;
+  
   if (!req.file) {
-    console.log('Resuqest file doesnt exist')
+    console.log('Request file does not exist');
+    return res.status(400).json({ message: 'No file uploaded' });
   }
 
-  // Upload file to Cloudinary
-  cloudinary.uploader.upload(path, { public_id: originalname, format: 'webp'  }, (error, result) => {
+  // Upload file to Cloudinary with optimization
+  cloudinary.uploader.upload(path, {
+    public_id: originalname,
+    format: 'webp',
+    transformation: [
+      { width: 800, height: 800, crop: 'limit' }, // Adjust width and height as needed
+      { quality: 'auto' }, // Automatically adjust image quality
+    ],
+  }, (error, result) => {
     if (error) {
       console.log('Error uploading file to Cloudinary:', error);
       res.status(500).json({ message: 'Error uploading file to Cloudinary' });
@@ -138,6 +147,7 @@ app.post('/ulpoad-product-cloudinary', cloudinaryProductUpload.single('image'), 
     }
   });
 });
+
 
 
 

@@ -27,7 +27,6 @@ export default function Home({authToken, user_id}) {
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
-  
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
@@ -71,7 +70,6 @@ export default function Home({authToken, user_id}) {
     </>
 }
     </div>
-
   )
 }
 
