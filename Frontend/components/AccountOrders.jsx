@@ -29,7 +29,7 @@ function AccountOrders() {
                 :
                 <>
                 {orders.map((order) => (
-                  <OrdersCard order={order} />
+                  <OrdersCard order={order}   key={order.id} />
                   ))}
                   </>
               }
