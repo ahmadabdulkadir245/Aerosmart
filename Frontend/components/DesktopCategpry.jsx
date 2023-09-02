@@ -79,7 +79,7 @@ function DesktopCategpry() {
 ]
 
   return (
-    <div  className='grid grid-cols-4  gap-2 lg:gap-8 mx-auto max-w-7xl bg-white p-6 my-10 font-poppins text-gray-800'>
+    <div  className='grid grid-cols-4  gap-2 lg:gap-8 mx-auto max-w-7xl bg-white p-6 my-10 lg:my-20 font-poppins text-gray-800'>
         <div className="col-span-4">
 
        <h2 className="text-center uppercase text-xl font-poppins font-semibold tracking-wide [word-spacing:5px]">products <span className="text-yellow-500">category</span></h2>
@@ -87,7 +87,7 @@ function DesktopCategpry() {
         </div>
 
         {categories.map(category => (
-            <div className="bg-white grid grid-cols-1 grid-flow-row-dense  lg:grid-cols-4 xl:grid-cols-4   lg:gap-y-6 lg:gap-x-0 max-w-7xl" key={category.id} onClick={() => router.push(`/search/${category.category}`)}>
+            <div className="bg-white grid grid-cols-1 grid-flow-row-dense  lg:grid-cols-4 xl:grid-cols-4   lg:gap-y-6 lg:gap-x-0 max-w-7xl" key={category.id} onClick={() => router.push(`/category/${category.category}`)}>
                 <div className='col-span-1 lg:col-span-4 '>
                     <div className="lg:flex  space-x-4 items-center cursor-pointer">
                     <div className="relative bg-gray-300 w-full h-[80px] lg:w-[120px] md:h-[120px] lg:h-[80px] rounded-md overflow-hidden">

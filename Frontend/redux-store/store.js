@@ -5,6 +5,7 @@ import cartItemReducer from "../slices/cartItemSlice";
 import addressReducer from "../slices/addressSlice";
 import cartItemsReducer from "../slices/cartItemsSlice";
 import orderReducer from "../slices/orderSlice";
+import userOrderReducer from "../slices/userOrdersSlice";
 import userReducer from '../slices/userSlice'
 import navReducer from '../slices/navSlice'
 import productReducer from "../slices/productSlice"
@@ -19,6 +20,7 @@ export const store = configureStore({
     cartItem: cartItemReducer,
     address: addressReducer,
     order: orderReducer,
+    userOrder: userOrderReducer,
     nav: navReducer,
     product: productReducer,
     products: productsReducer,

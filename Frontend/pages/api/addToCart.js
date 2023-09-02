@@ -4,7 +4,6 @@ export default async function handler(req, res) {
   if (req.method === 'POST') {
     try {
         const { id, user_id, qauntity } = req.body; 
-
       const graphqlQuery = {
         query: `
           mutation AddToCart($user_id: Int, $quantity: Int, $product_id: Int) {

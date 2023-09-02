@@ -70,7 +70,7 @@ function DesktopBanner() {
       >
         {banners.map(banner => (
         <SwiperSlide key={banner.id} >
-            <div className='relative  w-full h-[300px] md:h-[400px] lg:h-[500px]  rounded-md lg:rounded-none'>
+            <div className='relative  w-full h-[300px] md:h-[400px] lg:h-[calc(100vh-70px)]  rounded-md lg:rounded-none '>
           <Image src={banner.image_url} 
           alt={banner.id} priority  className="rounded-md lg:rounded-none " layout="fill" objectFit="cover" />
             </div>

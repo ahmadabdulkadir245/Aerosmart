@@ -23,6 +23,7 @@ function Cart({  user_id, authToken}) {
   const dispatch = useDispatch()
   const cartTotal = useSelector(selectCartTotal)
   const cartProducts = useSelector(selectedCartItems)
+  // console.log(cartProducts)
   useEffect(() => {
     if(!authToken) return;
       dispatch(fetchCart(user_id))
