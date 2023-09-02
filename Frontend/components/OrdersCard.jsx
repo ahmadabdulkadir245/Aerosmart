@@ -5,7 +5,7 @@ const { format } = require('date-fns');
 function OrdersCard({ order}) {
   const date = format(new Date(order.date), 'dd MMM yyyy');
   return (
-    <div className="text-xs">
+    <div className="text-xs" key={order.id}>
     <div className="flex justify-between items-center bg-gray-300 p-2 rounded-t-sm mt-2 space-x-2">
         <div className="">
             <h2 className='uppercase font-semibold'>order placed</h2>

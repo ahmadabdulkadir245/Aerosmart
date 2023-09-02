@@ -79,10 +79,10 @@ function DesktopCategpry() {
 ]
 
   return (
-    <div  className='grid grid-cols-4  gap-2 lg:gap-8 mx-auto max-w-7xl bg-white p-6 my-10 lg:my-20 font-poppins text-gray-800'>
+    <div  className='grid grid-cols-4  gap-2 lg:gap-8 mx-auto max-w-7xl bg-white p-6 my-6 lg:my-20 font-poppins text-gray-800'>
         <div className="col-span-4">
 
-       <h2 className="text-center uppercase text-xl font-poppins font-semibold tracking-wide [word-spacing:5px]">products <span className="text-yellow-500">category</span></h2>
+       <h2 className="text-center uppercase text-xl font-poppins font-semibold tracking-wide [word-spacing:5px] lg:mt-10">products <span className="text-yellow-500">category</span></h2>
         <hr className=" bg-gray-400 my-2 " />
         </div>
 

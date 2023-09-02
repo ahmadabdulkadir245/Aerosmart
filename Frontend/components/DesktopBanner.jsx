@@ -11,7 +11,8 @@ import Image from 'next/legacy/image'
 
 
 function DesktopBanner() {
-  const [banners, setBanners] = useState([])
+  const [banner, setBanners] = useState([])
+  const banners = ["https://res.cloudinary.com/dxc8mersm/image/upload/v1693670612/pexels-fomstock-com-1115804.jpg.webp", "https://res.cloudinary.com/dxc8mersm/image/upload/v1693670690/palor.jpg.webp", "https://res.cloudinary.com/dxc8mersm/image/upload/v1693670711/living.jpg.webp"]
     const [swiperLoaded, setSwiperLoaded] = useState(false);
   const page = 1
   useEffect(() => {
@@ -68,11 +69,11 @@ function DesktopBanner() {
       <div className="relative w-full h-full  overflow-hidden m-auto  lg:m-0 rounded-md lg:rounded-none"
         // suppressHydrationWarning
       >
-        {banners.map(banner => (
-        <SwiperSlide key={banner.id} >
+        {banners.map((banner, index) => (
+        <SwiperSlide key={index} >
             <div className='relative  w-full h-[300px] md:h-[400px] lg:h-[calc(100vh-70px)]  rounded-md lg:rounded-none '>
-          <Image src={banner.image_url} 
-          alt={banner.id} priority  className="rounded-md lg:rounded-none " layout="fill" objectFit="cover" />
+          <Image src={banner} 
+          alt={banner} priority  className="rounded-md lg:rounded-none " layout="fill" objectFit="cover" />
             </div>
       </SwiperSlide>
         ))}
